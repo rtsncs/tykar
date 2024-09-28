@@ -11,9 +11,9 @@ import {
   ModalOverlay,
   Spinner,
 } from "@chakra-ui/react";
-import { SetStateAction, useContext, useState } from "react";
-import { ApiClient } from "../api";
+import { SetStateAction, useState } from "react";
 import { ResponseError } from "../api/gen";
+import { useSession } from "../AuthProvider";
 
 function Login(props: { isOpen: boolean; onClose: () => void }) {
   const { isOpen, onClose } = props;
@@ -30,14 +30,13 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
   const [requestSend, setRequestSend] = useState(false);
   const [error, setError] = useState("");
 
-  const client = useContext(ApiClient);
+  const { login } = useSession();
 
   function onLogin() {
     if (requestSend || !username || !password) return;
     setRequestSend(true);
     setError("");
-    client
-      .login({ username, password })
+    login({ username, password })
       .then(() => {
         onClose();
       })
