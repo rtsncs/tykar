@@ -5,7 +5,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
-    "api": "rm -r src/api && openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/apidoc/openapi.json --skip-validate-spec -o src/api --additional-properties=supportsES6,withInterfaces",
+    "api": "rm -rf src/api/gen && openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/apidoc/openapi.json --skip-validate-spec -o src/api/gen --additional-properties=supportsES6",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

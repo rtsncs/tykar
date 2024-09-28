@@ -11,6 +11,7 @@ axum = "0.7.5"
 rand = "0.8.5"
 serde = "1.0.210"
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "uuid"] }
+thiserror = "1.0.64"
 tokio = { version = "1.40.0", features = ["rt-multi-thread"] }
 tower = "0.5.1"
 tower-http = { version = "0.5.2", features = ["cors", "trace"] }

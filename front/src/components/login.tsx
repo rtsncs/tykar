@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Input,
   Modal,
@@ -10,29 +11,44 @@ import {
   ModalOverlay,
   Spinner,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { DefaultApi } from "../api";
+import { SetStateAction, useContext, useState } from "react";
+import { ApiClient } from "../api";
+import { ResponseError } from "../api/gen";
 
 function Login(props: { isOpen: boolean; onClose: () => void }) {
   const { isOpen, onClose } = props;
 
   const [username, setName] = useState("");
-  const handleNameChange = (e) => setName(e.target.value);
+  const handleNameChange = (e: { target: { value: SetStateAction<string> } }) =>
+    setName(e.target.value);
 
   const [password, setPassword] = useState("");
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handlePasswordChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => setPassword(e.target.value);
 
   const [requestSend, setRequestSend] = useState(false);
+  const [error, setError] = useState("");
 
-  const api = new DefaultApi();
+  const client = useContext(ApiClient);
 
-  function login() {
+  function onLogin() {
     if (requestSend || !username || !password) return;
     setRequestSend(true);
-    api.login({ username, password }).then(() => {
-      setRequestSend(false);
-    });
-    onClose();
+    setError("");
+    client
+      .login({ username, password })
+      .then(() => {
+        onClose();
+      })
+      .catch((e) => {
+        if (e instanceof ResponseError && e.response.status === 401) {
+          setError("Invalid credentials.");
+        } else {
+          setError("Something went wrong.");
+        }
+      })
+      .finally(() => setRequestSend(false));
   }
 
   return (
@@ -43,6 +59,7 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
         <ModalCloseButton />
         <ModalBody display="flex" flexDir="column" alignItems="center" gap={4}>
           {requestSend && <Spinner size="lg" />}
+          {error && <Box color="error">{error}</Box>}
           <Input
             placeholder="Login"
             type="text"
@@ -61,7 +78,7 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
           <Button variant="ghost" onClick={onClose} mr={3}>
             Cancel
           </Button>
-          <Button colorScheme="blue" onClick={login}>
+          <Button colorScheme="blue" onClick={onLogin}>
             Login
           </Button>
         </ModalFooter>

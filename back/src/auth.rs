@@ -1,8 +1,9 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use argon2::{password_hash::SaltString, Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use axum::{http::StatusCode, response::IntoResponse, Extension, Form};
 use serde::Deserialize;
 use sqlx::PgPool;
+use thiserror::Error;
 use utoipa::{OpenApi, ToSchema};
 use utoipa_axum::{router::OpenApiRouter, routes};
 
@@ -22,7 +23,17 @@ pub fn router() -> OpenApiRouter {
         .routes(routes!(login))
 }
 
-async fn validate_credentials(credentials: Credentials, pool: &PgPool) -> Result<i64> {
+#[derive(Debug, Error)]
+enum AuthError {
+    #[error("invalid username")]
+    InvalidUsername,
+    #[error("invalid password")]
+    InvalidPassword,
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
+}
+
+async fn validate_credentials(credentials: Credentials, pool: &PgPool) -> Result<i64, AuthError> {
     let row: Option<_> = sqlx::query!(
         r#"
         select id, password
@@ -37,7 +48,7 @@ async fn validate_credentials(credentials: Credentials, pool: &PgPool) -> Result
 
     let (expected_password_hash, user_id) = match row {
         Some(row) => (row.password, row.id),
-        None => return Err(anyhow!("Unknown username.")),
+        None => return Err(AuthError::InvalidUsername),
     };
 
     let expected_password_hash =
@@ -45,7 +56,7 @@ async fn validate_credentials(credentials: Credentials, pool: &PgPool) -> Result
 
     Argon2::default()
         .verify_password(credentials.password.as_bytes(), &expected_password_hash)
-        .context("Invalid password.")?;
+        .map_err(|_| AuthError::InvalidPassword)?;
 
     return Ok(user_id);
 }
@@ -97,7 +108,7 @@ async fn register(
     operation_id = "login",
     path = "/login",
     request_body(content = Credentials, content_type = "application/x-www-form-urlencoded"),
-    responses((status = OK, description = "Success"))
+    responses((status = OK, description = "Success"), (status = UNAUTHORIZED, description = "Invalid credentials"))
 )]
 async fn login(
     Extension(pool): Extension<PgPool>,
@@ -105,6 +116,7 @@ async fn login(
 ) -> impl IntoResponse {
     match validate_credentials(credentials, &pool).await {
         Ok(_) => StatusCode::OK,
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        Err(AuthError::InvalidUsername | AuthError::InvalidPassword) => StatusCode::UNAUTHORIZED,
+        Err(AuthError::Other(_)) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }

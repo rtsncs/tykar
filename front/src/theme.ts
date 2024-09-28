@@ -5,5 +5,15 @@ const config: ThemeConfig = {
   useSystemColorMode: true,
 };
 
-const theme = extendTheme({ config });
+const theme = extendTheme({
+  config,
+  semanticTokens: {
+    colors: {
+      error: {
+        default: "red.600",
+        _dark: "red.400",
+      },
+    },
+  },
+});
 export default theme;

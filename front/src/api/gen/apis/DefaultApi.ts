@@ -26,58 +26,9 @@ export interface RegisterRequest {
 }
 
 /**
- * DefaultApi - interface
- * 
- * @export
- * @interface DefaultApiInterface
- */
-export interface DefaultApiInterface {
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApiInterface
-     */
-    healthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
-
-    /**
-     */
-    health(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
-
-    /**
-     * 
-     * @param {string} password 
-     * @param {string} username 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApiInterface
-     */
-    loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
-
-    /**
-     */
-    login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-    /**
-     * 
-     * @param {string} password 
-     * @param {string} username 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApiInterface
-     */
-    registerRaw(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
-
-    /**
-     */
-    register(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-
-}
-
-/**
  * 
  */
-export class DefaultApi extends runtime.BaseAPI implements DefaultApiInterface {
+export class DefaultApi extends runtime.BaseAPI {
 
     /**
      */
