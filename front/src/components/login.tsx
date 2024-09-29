@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -11,7 +13,7 @@ import {
   ModalOverlay,
   Spinner,
 } from "@chakra-ui/react";
-import { SetStateAction, useState } from "react";
+import { FormEvent, SetStateAction, useState } from "react";
 import { ResponseError } from "../api/gen";
 import { useSession } from "../AuthProvider";
 
@@ -32,8 +34,9 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
 
   const { login } = useSession();
 
-  function onLogin() {
-    if (requestSend || !username || !password) return;
+  function onLogin(e: FormEvent) {
+    e.preventDefault();
+    if (requestSend) return;
     setRequestSend(true);
     setError("");
     login({ username, password })
@@ -56,31 +59,44 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
       <ModalContent>
         <ModalHeader>Login</ModalHeader>
         <ModalCloseButton />
-        <ModalBody display="flex" flexDir="column" alignItems="center" gap={4}>
-          {requestSend && <Spinner size="lg" />}
-          {error && <Box color="error">{error}</Box>}
-          <Input
-            placeholder="Login"
-            type="text"
-            value={username}
-            onChange={handleNameChange}
-          />
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </ModalBody>
+        <form onSubmit={onLogin}>
+          <ModalBody
+            display="flex"
+            flexDir="column"
+            alignItems="center"
+            gap={4}
+          >
+            {requestSend && <Spinner size="lg" />}
+            {error && <Box color="error">{error}</Box>}
+            <FormControl isRequired isInvalid={!username}>
+              <FormLabel>Username</FormLabel>
+              <Input
+                placeholder="Username"
+                type="text"
+                value={username}
+                onChange={handleNameChange}
+              />
+            </FormControl>
+            <FormControl isRequired isInvalid={!password}>
+              <FormLabel>Password</FormLabel>
+              <Input
+                placeholder="Password"
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+            </FormControl>
+          </ModalBody>
 
-        <ModalFooter>
-          <Button variant="ghost" onClick={onClose} mr={3}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue" onClick={onLogin}>
-            Login
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button variant="ghost" onClick={onClose} mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue" type="submit">
+              Login
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
