@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { ApiClient } from "./api";
+import { useApi } from "./api/ApiProvider";
 import { LoginRequest } from "./api/gen";
 
 interface Auth {
@@ -18,7 +18,7 @@ const AuthContext = createContext<Auth | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<string | null>(null);
-  const client = useContext(ApiClient);
+  const client = useApi();
 
   const login = async (credentials: LoginRequest) => {
     await client.login(credentials);

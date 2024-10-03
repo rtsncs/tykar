@@ -135,7 +135,14 @@ async fn register(
     Extension(pool): Extension<PgPool>,
     Form(credentials): Form<Credentials>,
 ) -> impl IntoResponse {
-    //TODO: validation
+    //TODO username taken
+    if credentials.username.chars().count() < 3
+        || credentials.username.chars().count() > 32
+        || credentials.password.chars().count() < 8
+    {
+        return StatusCode::BAD_REQUEST;
+    }
+
     match create_user(credentials, &pool).await {
         Ok(_) => StatusCode::OK,
         Err(err) => {

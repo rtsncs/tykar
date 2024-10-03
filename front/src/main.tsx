@@ -5,13 +5,16 @@ import "./index.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme.ts";
 import { AuthProvider } from "./AuthProvider.tsx";
+import { ApiProvider } from "./api/ApiProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <ApiProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ApiProvider>
     </ChakraProvider>
   </StrictMode>,
 );
