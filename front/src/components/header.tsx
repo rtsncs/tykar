@@ -1,15 +1,19 @@
 import {
-  Box,
   Button,
   chakra,
   Flex,
   Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import Login from "./login";
 import { useSession } from "../AuthProvider";
 import Register from "./register";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 function Header() {
   const {
@@ -24,16 +28,23 @@ function Header() {
     onClose: onRegisterClose,
   } = useDisclosure();
 
-  const { session } = useSession();
+  const { session, logout } = useSession();
 
   return (
     <>
       <chakra.header borderBottom="thin solid gray" boxShadow="md">
-        <Flex p={8}>
+        <Flex p={8} alignItems="center">
           <Heading>Tykar</Heading>
           <Spacer />
           {session ? (
-            <Box>{session}</Box>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                {session}
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => void logout()}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
           ) : (
             <>
               <Button onClick={onLoginOpen}>Login</Button>
