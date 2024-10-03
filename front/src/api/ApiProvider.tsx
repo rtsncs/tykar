@@ -1,10 +1,14 @@
 import { createContext, ReactNode, useContext } from "react";
 import { Configuration, DefaultApi } from "./gen";
 
+const apiPath = import.meta.env.VITE_API_PATH as string | undefined;
+
+console.log(apiPath);
+
 function createClient() {
   const client = new DefaultApi(
     new Configuration({
-      basePath: "http://localhost:3000",
+      basePath: apiPath ?? "http://localhost:3000",
       credentials: "include",
     }),
   );

@@ -36,7 +36,8 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let database_url = "postgresql://localhost:5432/tykar";
+    let database_url =
+        std::env::var("TYKAR_DB").unwrap_or("postgresql://localhost:5432/tykar".to_string());
     let db = PgPoolOptions::new()
         .max_connections(50)
         .connect(&database_url)
@@ -57,7 +58,8 @@ async fn main() -> anyhow::Result<()> {
     let router = router
         .merge(utoipa_swagger_ui::SwaggerUi::new("/swagger").url("/apidoc/openapi.json", api));
 
-    let listener = TcpListener::bind("127.0.0.1:3000").await?;
+    let address = std::env::var("TYKAR_ADDRESS").unwrap_or("127.0.0.1:3000".to_string());
+    let listener = TcpListener::bind(address).await?;
     axum::serve(listener, router).await?;
 
     Ok(())
