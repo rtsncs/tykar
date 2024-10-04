@@ -3,8 +3,6 @@ import { Configuration, DefaultApi } from "./gen";
 
 const apiPath = import.meta.env.VITE_API_PATH as string | undefined;
 
-console.log(apiPath);
-
 function createClient() {
   const client = new DefaultApi(
     new Configuration({
