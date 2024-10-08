@@ -39,7 +39,7 @@ function Header() {
           {session ? (
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                {session}
+                {session.username}
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={() => void logout()}>Logout</MenuItem>

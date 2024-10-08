@@ -1,7 +1,7 @@
 import {
-  Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -15,6 +15,9 @@ import {
 } from "@chakra-ui/react";
 import { FormEvent, SetStateAction, useState } from "react";
 import { useApi } from "../api/ApiProvider";
+import type { components } from "../api/api";
+
+type RegisterError = components["schemas"]["RegisterError"];
 
 function Register(props: { isOpen: boolean; onClose: () => void }) {
   const { isOpen, onClose } = props;
@@ -22,6 +25,11 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
   const [username, setName] = useState("");
   const handleNameChange = (e: { target: { value: SetStateAction<string> } }) =>
     setName(e.target.value);
+
+  const [email, setEmail] = useState("");
+  const handleEmailChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => setEmail(e.target.value);
 
   const [password, setPassword] = useState("");
   const handlePasswordChange = (e: {
@@ -34,7 +42,7 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
   }) => setPasswordRepeat(e.target.value);
 
   const [requestSend, setRequestSend] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<RegisterError | null>(null);
 
   const client = useApi();
 
@@ -42,17 +50,21 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
     e.preventDefault();
     if (requestSend || password !== passwordRepeat) return;
     setRequestSend(true);
-    setError("");
-    client
-      .register({ username, password })
-      .then(() => {
+    setErrors(null);
+    const register = async () => {
+      const { error } = await client.POST("/api/users/register", {
+        body: { username, email, password },
+      });
+      if (!error) {
         onClose();
-      })
-      .catch((e) => {
-        void e;
-        setError("Something went wrong.");
-      })
-      .finally(() => setRequestSend(false));
+      } else {
+        console.log(error);
+        setErrors(error);
+      }
+      setRequestSend(false);
+    };
+
+    void register();
   }
 
   return (
@@ -69,8 +81,10 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
             gap={4}
           >
             {requestSend && <Spinner size="lg" />}
-            {error && <Box color="error">{error}</Box>}
-            <FormControl isRequired isInvalid={!username}>
+            <FormControl
+              isRequired
+              isInvalid={!username || errors?.errors.username != null}
+            >
               <FormLabel>Username</FormLabel>
               <Input
                 placeholder="Username"
@@ -80,8 +94,25 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
                 maxLength={32}
                 onChange={handleNameChange}
               />
+              <FormErrorMessage>{errors?.errors.username}</FormErrorMessage>
             </FormControl>
-            <FormControl isRequired isInvalid={password.length < 8}>
+            <FormControl
+              isRequired
+              isInvalid={!email || errors?.errors.email != null}
+            >
+              <FormLabel>Email</FormLabel>
+              <Input
+                placeholder="Email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              <FormErrorMessage>{errors?.errors.email}</FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isRequired
+              isInvalid={password.length < 8 || errors?.errors.password != null}
+            >
               <FormLabel>Password</FormLabel>
               <Input
                 placeholder="Password"
@@ -90,6 +121,7 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
                 minLength={8}
                 onChange={handlePasswordChange}
               />
+              <FormErrorMessage>{errors?.errors.password}</FormErrorMessage>
             </FormControl>
             <FormControl isRequired isInvalid={passwordRepeat !== password}>
               <FormLabel>Repeat password</FormLabel>

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
   FormLabel,
   Input,
@@ -13,21 +14,23 @@ import {
   ModalOverlay,
   Spinner,
 } from "@chakra-ui/react";
-import { FormEvent, SetStateAction, useState } from "react";
-import { ResponseError } from "../api/gen";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useSession } from "../AuthProvider";
 
 function Login(props: { isOpen: boolean; onClose: () => void }) {
   const { isOpen, onClose } = props;
 
-  const [username, setName] = useState("");
-  const handleNameChange = (e: { target: { value: SetStateAction<string> } }) =>
-    setName(e.target.value);
+  const [email_or_username, setEmailOrName] = useState("");
+  const handleEmailorNameChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setEmailOrName(e.target.value);
 
   const [password, setPassword] = useState("");
-  const handlePasswordChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => setPassword(e.target.value);
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.target.value);
+
+  const [remember_me, setRememberMe] = useState(false);
+  const handleRememberMeChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setRememberMe(e.target.checked);
 
   const [requestSend, setRequestSend] = useState(false);
   const [error, setError] = useState("");
@@ -39,18 +42,18 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
     if (requestSend) return;
     setRequestSend(true);
     setError("");
-    login({ username, password })
-      .then(() => {
+    void login({ email_or_username, password, remember_me }).then((success) => {
+      if (success) {
         onClose();
-      })
-      .catch((e) => {
-        if (e instanceof ResponseError && e.response.status === 401) {
-          setError("Invalid credentials.");
-        } else {
-          setError("Something went wrong.");
-        }
-      })
-      .finally(() => setRequestSend(false));
+      } else {
+        setError("Invalid credentials.");
+      }
+      setRequestSend(false);
+    });
+    //if (e instanceof ResponseError && e.response.status === 401) {
+    //} else {
+    //  setError("Something went wrong.");
+    //}
   }
 
   return (
@@ -68,13 +71,13 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
           >
             {requestSend && <Spinner size="lg" />}
             {error && <Box color="error">{error}</Box>}
-            <FormControl isRequired isInvalid={!username}>
-              <FormLabel>Username</FormLabel>
+            <FormControl isRequired isInvalid={!email_or_username}>
+              <FormLabel>Email or username</FormLabel>
               <Input
-                placeholder="Username"
+                placeholder="Email or username"
                 type="text"
-                value={username}
-                onChange={handleNameChange}
+                value={email_or_username}
+                onChange={handleEmailorNameChange}
               />
             </FormControl>
             <FormControl isRequired isInvalid={!password}>
@@ -85,6 +88,14 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
                 value={password}
                 onChange={handlePasswordChange}
               />
+            </FormControl>
+            <FormControl>
+              <Checkbox
+                isChecked={remember_me}
+                onChange={handleRememberMeChange}
+              >
+                Remember me
+              </Checkbox>
             </FormControl>
           </ModalBody>
 

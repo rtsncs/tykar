@@ -5,7 +5,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
-    "api": "rm -rf src/api/gen && openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/apidoc/openapi.json --skip-validate-spec -o src/api/gen --additional-properties=supportsES6",
+    "api": "openapi-typescript http://localhost:4000/api/openapi -o ./src/api/api.d.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -17,13 +17,13 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "framer-motion": "^11.3.30",
+    "openapi-fetch": "^0.12.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@openapitools/openapi-generator-cli": "^2.13.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -32,6 +32,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "openapi-typescript": "^7.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
