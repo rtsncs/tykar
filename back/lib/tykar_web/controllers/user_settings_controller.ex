@@ -1,8 +1,8 @@
-defmodule TykarBackWeb.UserSettingsController do
-  use TykarBackWeb, :controller
+defmodule TykarWeb.UserSettingsController do
+  use TykarWeb, :controller
 
-  alias TykarBack.Accounts
-  alias TykarBackWeb.UserAuth
+  alias Tykar.Accounts
+  alias TykarWeb.UserAuth
 
   plug :assign_email_and_password_changesets
 

@@ -1,7 +1,7 @@
-defmodule TykarBackWeb.UserSessionControllerTest do
-  use TykarBackWeb.ConnCase, async: true
+defmodule TykarWeb.UserSessionControllerTest do
+  use TykarWeb.ConnCase, async: true
 
-  import TykarBack.AccountsFixtures
+  import Tykar.AccountsFixtures
 
   setup do
     %{user: user_fixture()}
@@ -32,7 +32,7 @@ defmodule TykarBackWeb.UserSessionControllerTest do
           "remember_me" => "true"
         })
 
-      assert conn.resp_cookies["_tykar_back_web_user_remember_me"]
+      assert conn.resp_cookies["_tykar_web_user_remember_me"]
       response(conn, 204)
     end
 

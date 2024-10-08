@@ -1,16 +1,16 @@
-defmodule TykarBackWeb.UserAuthTest do
-  use TykarBackWeb.ConnCase, async: true
+defmodule TykarWeb.UserAuthTest do
+  use TykarWeb.ConnCase, async: true
 
-  alias TykarBack.Accounts
-  alias TykarBackWeb.UserAuth
-  import TykarBack.AccountsFixtures
+  alias Tykar.Accounts
+  alias TykarWeb.UserAuth
+  import Tykar.AccountsFixtures
 
-  @remember_me_cookie "_tykar_back_web_user_remember_me"
+  @remember_me_cookie "_tykar_web_user_remember_me"
 
   setup %{conn: conn} do
     conn =
       conn
-      |> Map.replace!(:secret_key_base, TykarBackWeb.Endpoint.config(:secret_key_base))
+      |> Map.replace!(:secret_key_base, TykarWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
     %{user: user_fixture(), conn: conn}
@@ -58,7 +58,7 @@ defmodule TykarBackWeb.UserAuthTest do
 
     test "broadcasts to the given live_socket_id", %{conn: conn} do
       live_socket_id = "users_sessions:abcdef-token"
-      TykarBackWeb.Endpoint.subscribe(live_socket_id)
+      TykarWeb.Endpoint.subscribe(live_socket_id)
 
       conn
       |> put_session(:live_socket_id, live_socket_id)

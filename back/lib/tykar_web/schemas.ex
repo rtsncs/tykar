@@ -1,4 +1,4 @@
-defmodule TykarBackWeb.Schemas do
+defmodule TykarWeb.Schemas do
   alias OpenApiSpex.Schema
 
   defmodule RegisterRequest do

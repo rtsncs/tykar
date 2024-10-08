@@ -1,7 +1,7 @@
 import Config
 
 # Configure your database
-config :back, TykarBack.Repo,
+config :tykar, Tykar.Repo,
   url: "postgresql://localhost/tykar",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
@@ -13,7 +13,7 @@ config :back, TykarBack.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :back, TykarBackWeb.Endpoint,
+config :tykar, TykarWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
@@ -47,16 +47,16 @@ config :back, TykarBackWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :back, TykarBackWeb.Endpoint,
+config :tykar, TykarWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"lib/back_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/tykar_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :back, dev_routes: true
+config :tykar, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

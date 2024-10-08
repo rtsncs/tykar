@@ -1,7 +1,7 @@
-defmodule TykarBack.AccountsFixtures do
+defmodule Tykar.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `TykarBack.Accounts` context.
+  entities via the `Tykar.Accounts` context.
   """
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
@@ -20,7 +20,7 @@ defmodule TykarBack.AccountsFixtures do
     {:ok, user} =
       attrs
       |> valid_user_attributes()
-      |> TykarBack.Accounts.register_user()
+      |> Tykar.Accounts.register_user()
 
     user
   end

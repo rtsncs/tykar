@@ -1,7 +1,7 @@
-defmodule TykarBackWeb.UserResetPasswordController do
-  use TykarBackWeb, :controller
+defmodule TykarWeb.UserResetPasswordController do
+  use TykarWeb, :controller
 
-  alias TykarBack.Accounts
+  alias Tykar.Accounts
 
   plug :get_user_by_reset_password_token when action in [:edit, :update]
 

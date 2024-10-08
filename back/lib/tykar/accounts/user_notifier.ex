@@ -1,14 +1,14 @@
-defmodule TykarBack.Accounts.UserNotifier do
+defmodule Tykar.Accounts.UserNotifier do
   import Swoosh.Email
 
-  alias TykarBack.Mailer
+  alias Tykar.Mailer
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
     email =
       new()
       |> to(recipient)
-      |> from({"TykarBack", "contact@example.com"})
+      |> from({"Tykar", "contact@example.com"})
       |> subject(subject)
       |> text_body(body)
 

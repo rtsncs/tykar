@@ -1,7 +1,7 @@
-defmodule TykarBackWeb.Router do
-  use TykarBackWeb, :router
+defmodule TykarWeb.Router do
+  use TykarWeb, :router
 
-  import TykarBackWeb.UserAuth
+  import TykarWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -15,7 +15,7 @@ defmodule TykarBackWeb.Router do
     plug :accepts, ["json"]
     plug :fetch_session
     plug :fetch_current_user
-    plug OpenApiSpex.Plug.PutApiSpec, module: TykarBackWeb.ApiSpec
+    plug OpenApiSpex.Plug.PutApiSpec, module: TykarWeb.ApiSpec
   end
 
   pipeline :api_forms do
@@ -31,7 +31,7 @@ defmodule TykarBackWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", TykarBackWeb do
+  scope "/api", TykarWeb do
     pipe_through :api
     get "/users/current", UserSessionController, :show
     delete "/users/log_out", UserSessionController, :delete
@@ -42,7 +42,7 @@ defmodule TykarBackWeb.Router do
     get "/openapi", OpenApiSpex.Plug.RenderSpec, :show
   end
 
-  scope "/api", TykarBackWeb do
+  scope "/api", TykarWeb do
     pipe_through :api_forms
     post "/users/register", UserRegistrationController, :create
     post "/users/log_in", UserSessionController, :create
@@ -50,7 +50,7 @@ defmodule TykarBackWeb.Router do
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:back, :dev_routes) do
+  if Application.compile_env(:tykar, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
     # it behind authentication and allow only admins to access it.
     # If your application does not have an admins-only section yet,
@@ -61,14 +61,14 @@ defmodule TykarBackWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: TykarBackWeb.Telemetry
+      live_dashboard "/dashboard", metrics: TykarWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 
   ## Authentication routes
 
-  scope "/", TykarBackWeb do
+  scope "/", TykarWeb do
     pipe_through [:browser]
 
     # get "/users/register", UserRegistrationController, :new
@@ -81,7 +81,7 @@ defmodule TykarBackWeb.Router do
     # put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
-  # scope "/", TykarBackWeb do
+  # scope "/", TykarWeb do
   #   pipe_through [:browser, :require_authenticated_user]
   #
   #   get "/users/settings", UserSettingsController, :edit
@@ -89,7 +89,7 @@ defmodule TykarBackWeb.Router do
   #   get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
   # end
 
-  # scope "/", TykarBackWeb do
+  # scope "/", TykarWeb do
   #   pipe_through [:browser]
   #
   #   # delete "/users/log_out", UserSessionController, :delete

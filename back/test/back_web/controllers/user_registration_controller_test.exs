@@ -1,7 +1,7 @@
-defmodule TykarBackWeb.UserRegistrationControllerTest do
-  use TykarBackWeb.ConnCase, async: true
+defmodule TykarWeb.UserRegistrationControllerTest do
+  use TykarWeb.ConnCase, async: true
 
-  import TykarBack.AccountsFixtures
+  import Tykar.AccountsFixtures
 
   describe "POST /api/users/register" do
     @tag :capture_log

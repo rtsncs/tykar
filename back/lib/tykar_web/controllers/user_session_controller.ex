@@ -1,12 +1,12 @@
-defmodule TykarBackWeb.UserSessionController do
-  use TykarBackWeb, :controller
+defmodule TykarWeb.UserSessionController do
+  use TykarWeb, :controller
   use OpenApiSpex.ControllerSpecs
 
-  alias TykarBack.Accounts
-  alias TykarBackWeb.UserAuth
-  alias TykarBackWeb.Schemas.{LoginRequest, CurrentUserResponse}
+  alias Tykar.Accounts
+  alias TykarWeb.UserAuth
+  alias TykarWeb.Schemas.{LoginRequest, CurrentUserResponse}
 
-  action_fallback TykarBackWeb.FallbackController
+  action_fallback TykarWeb.FallbackController
 
   operation :create,
     operation_id: "login",
@@ -24,7 +24,7 @@ defmodule TykarBackWeb.UserSessionController do
     else
       conn
       |> put_status(:unauthorized)
-      |> put_view(json: TykarBackWeb.ErrorJSON)
+      |> put_view(json: TykarWeb.ErrorJSON)
       |> render(:"401")
     end
   end

@@ -1,8 +1,8 @@
-defmodule TykarBackWeb.UserSettingsControllerTest do
-  use TykarBackWeb.ConnCase, async: true
+defmodule TykarWeb.UserSettingsControllerTest do
+  use TykarWeb.ConnCase, async: true
 
-  alias TykarBack.Accounts
-  import TykarBack.AccountsFixtures
+  alias Tykar.Accounts
+  import Tykar.AccountsFixtures
 
   setup :register_and_log_in_user
 

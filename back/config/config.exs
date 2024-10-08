@@ -7,20 +7,20 @@
 # General application configuration
 import Config
 
-config :back,
-  namespace: TykarBack,
-  ecto_repos: [TykarBack.Repo],
+config :tykar,
+  namespace: Tykar,
+  ecto_repos: [Tykar.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configures the endpoint
-config :back, TykarBackWeb.Endpoint,
+config :tykar, TykarWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: TykarBackWeb.ErrorHTML, json: TykarBackWeb.ErrorJSON],
+    formats: [json: TykarWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: TykarBack.PubSub,
+  pubsub_server: Tykar.PubSub,
   live_view: [signing_salt: "Z5ZSS5Zp"]
 
 # Configures the mailer
@@ -30,7 +30,7 @@ config :back, TykarBackWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :back, TykarBack.Mailer, adapter: Swoosh.Adapters.Local
+config :tykar, Tykar.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger
 config :logger, :console,

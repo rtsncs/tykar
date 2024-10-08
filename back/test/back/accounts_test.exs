@@ -1,10 +1,10 @@
-defmodule TykarBack.AccountsTest do
-  use TykarBack.DataCase
+defmodule Tykar.AccountsTest do
+  use Tykar.DataCase
 
-  alias TykarBack.Accounts
+  alias Tykar.Accounts
 
-  import TykarBack.AccountsFixtures
-  alias TykarBack.Accounts.{User, UserToken}
+  import Tykar.AccountsFixtures
+  alias Tykar.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do

@@ -1,12 +1,12 @@
-defmodule TykarBackWeb.UserRegistrationController do
-  use TykarBackWeb, :controller
+defmodule TykarWeb.UserRegistrationController do
+  use TykarWeb, :controller
   use OpenApiSpex.ControllerSpecs
 
-  alias TykarBack.Accounts
-  alias TykarBackWeb.UserAuth
-  alias TykarBackWeb.Schemas.{RegisterRequest, RegisterError}
+  alias Tykar.Accounts
+  alias TykarWeb.UserAuth
+  alias TykarWeb.Schemas.{RegisterRequest, RegisterError}
 
-  action_fallback TykarBackWeb.FallbackController
+  action_fallback TykarWeb.FallbackController
 
   operation :create,
     operation_id: "register",

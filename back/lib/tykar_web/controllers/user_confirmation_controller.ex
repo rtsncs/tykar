@@ -1,7 +1,7 @@
-defmodule TykarBackWeb.UserConfirmationController do
-  use TykarBackWeb, :controller
+defmodule TykarWeb.UserConfirmationController do
+  use TykarWeb, :controller
 
-  alias TykarBack.Accounts
+  alias Tykar.Accounts
 
   def new(conn, _params) do
     render(conn, :new)

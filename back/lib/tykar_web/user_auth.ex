@@ -1,16 +1,16 @@
-defmodule TykarBackWeb.UserAuth do
-  use TykarBackWeb, :verified_routes
+defmodule TykarWeb.UserAuth do
+  use TykarWeb, :verified_routes
 
   import Plug.Conn
   import Phoenix.Controller
 
-  alias TykarBack.Accounts
+  alias Tykar.Accounts
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
   @max_age 60 * 60 * 24 * 60
-  @remember_me_cookie "_tykar_back_web_user_remember_me"
+  @remember_me_cookie "_tykar_web_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
   @doc """
@@ -76,7 +76,7 @@ defmodule TykarBackWeb.UserAuth do
     user_token && Accounts.delete_user_session_token(user_token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
-      TykarBackWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+      TykarWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
     end
 
     conn

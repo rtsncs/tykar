@@ -1,5 +1,5 @@
-defmodule TykarBack.Repo do
+defmodule Tykar.Repo do
   use Ecto.Repo,
-    otp_app: :back,
+    otp_app: :tykar,
     adapter: Ecto.Adapters.Postgres
 end

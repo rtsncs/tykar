@@ -1,12 +1,12 @@
-defmodule TykarBack.Accounts do
+defmodule Tykar.Accounts do
   @moduledoc """
   The Accounts context.
   """
 
   import Ecto.Query, warn: false
-  alias TykarBack.Repo
+  alias Tykar.Repo
 
-  alias TykarBack.Accounts.{User, UserToken, UserNotifier}
+  alias Tykar.Accounts.{User, UserToken, UserNotifier}
 
   ## Database getters
 

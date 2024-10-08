@@ -1,4 +1,4 @@
-defmodule TykarBackWeb.ChangesetJSON do
+defmodule TykarWeb.ChangesetJSON do
   @doc """
   Renders changeset errors.
   """
@@ -13,9 +13,9 @@ defmodule TykarBackWeb.ChangesetJSON do
     # uncommenting and adjusting the following code:
 
     # if count = opts[:count] do
-    #   Gettext.dngettext(TykarBackWeb.Gettext, "errors", msg, msg, count, opts)
+    #   Gettext.dngettext(TykarWeb.Gettext, "errors", msg, msg, count, opts)
     # else
-    #   Gettext.dgettext(TykarBackWeb.Gettext, "errors", msg, opts)
+    #   Gettext.dgettext(TykarWeb.Gettext, "errors", msg, opts)
     # end
 
     Enum.reduce(opts, msg, fn {key, value}, acc ->

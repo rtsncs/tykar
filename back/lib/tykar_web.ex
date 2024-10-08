@@ -1,11 +1,11 @@
-defmodule TykarBackWeb do
+defmodule TykarWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use TykarBackWeb, :controller
+      use TykarWeb, :controller
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -63,7 +63,7 @@ defmodule TykarBackWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import TykarBackWeb.CoreComponents
+      import TykarWeb.CoreComponents
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
@@ -73,9 +73,9 @@ defmodule TykarBackWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: TykarBackWeb.Endpoint,
-        router: TykarBackWeb.Router,
-        statics: TykarBackWeb.static_paths()
+        endpoint: TykarWeb.Endpoint,
+        router: TykarWeb.Router,
+        statics: TykarWeb.static_paths()
     end
   end
 

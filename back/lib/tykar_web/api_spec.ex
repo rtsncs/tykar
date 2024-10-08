@@ -1,6 +1,6 @@
-defmodule TykarBackWeb.ApiSpec do
+defmodule TykarWeb.ApiSpec do
   alias OpenApiSpex.{Info, OpenApi, Paths, Server}
-  alias TykarBackWeb.{Endpoint, Router}
+  alias TykarWeb.{Endpoint, Router}
 
   @behaviour OpenApi
 
@@ -12,8 +12,8 @@ defmodule TykarBackWeb.ApiSpec do
         Server.from_endpoint(Endpoint)
       ],
       info: %Info{
-        title: to_string(Application.spec(:back, :description)),
-        version: to_string(Application.spec(:back, :vsn))
+        title: to_string(Application.spec(:tykar, :description)),
+        version: to_string(Application.spec(:tykar, :vsn))
       },
       # Populate the paths from a phoenix router
       paths: Paths.from_router(Router)

@@ -1,23 +1,23 @@
-defmodule TykarBackWeb.FallbackController do
+defmodule TykarWeb.FallbackController do
   @moduledoc """
   Translates controller action results into valid `Plug.Conn` responses.
 
   See `Phoenix.Controller.action_fallback/1` for more details.
   """
-  use TykarBackWeb, :controller
+  use TykarWeb, :controller
 
   # This clause is an example of how to handle resources that cannot be found.
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> put_view(json: TykarBackWeb.ErrorJSON)
+    |> put_view(json: TykarWeb.ErrorJSON)
     |> render(:"404")
   end
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> put_view(json: TykarBackWeb.ChangesetJSON)
+    |> put_view(json: TykarWeb.ChangesetJSON)
     |> render(:error, changeset: changeset)
   end
 end
