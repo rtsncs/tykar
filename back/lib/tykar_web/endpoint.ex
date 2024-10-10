@@ -8,12 +8,13 @@ defmodule TykarWeb.Endpoint do
     store: :cookie,
     key: "_tykar_key",
     signing_salt: "WlOJkQFD",
-    same_site: "Lax"
+    same_site: "Strict",
+    secure: true
   ]
 
-  socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]],
-    longpoll: [connect_info: [session: @session_options]]
+  socket "/socket", TykarWeb.UserSocket,
+    websocket: [connect_info: [{:session, @session_options}]],
+    longpoll: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

@@ -17,6 +17,7 @@ defmodule Tykar.Application do
       # Start a worker by calling: Tykar.Worker.start_link(arg)
       # {Tykar.Worker, arg},
       # Start to serve requests, typically the last entry
+      TykarWeb.Presence,
       TykarWeb.Endpoint
     ]
 

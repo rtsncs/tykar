@@ -56,9 +56,10 @@ defmodule TykarWeb.Schemas do
       properties: %{
         id: %Schema{type: :string},
         email: %Schema{type: :string},
-        username: %Schema{type: :string}
+        username: %Schema{type: :string},
+        token: %Schema{type: :string}
       },
-      required: [:id, :email, :username]
+      required: [:id, :email, :username, :token]
     })
   end
 end

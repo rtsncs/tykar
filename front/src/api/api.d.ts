@@ -76,6 +76,7 @@ export interface components {
         CurrentUserResponse: {
             email: string;
             id: string;
+            token: string;
             username: string;
         };
         /** LoginRequest */

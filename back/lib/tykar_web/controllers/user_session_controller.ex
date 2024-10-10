@@ -38,7 +38,15 @@ defmodule TykarWeb.UserSessionController do
 
   def show(conn, _params) do
     if user = conn.assigns[:current_user] do
-      conn |> json(%{id: user.id, email: user.email, username: user.username})
+      token = Phoenix.Token.sign(conn, "user session", user.id)
+
+      conn
+      |> json(%CurrentUserResponse{
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        token: token
+      })
     else
       conn |> send_resp(:no_content, "")
     end

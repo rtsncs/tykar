@@ -33,7 +33,13 @@ function Header() {
   return (
     <>
       <chakra.header borderBottom="thin solid gray" boxShadow="md">
-        <Flex p={8} alignItems="center">
+        <Flex
+          w={{ base: "98vw", "2xl": "8xl" }}
+          py={8}
+          gap={2}
+          alignItems="center"
+          mx="auto"
+        >
           <Heading>Tykar</Heading>
           <Spacer />
           {session ? (
