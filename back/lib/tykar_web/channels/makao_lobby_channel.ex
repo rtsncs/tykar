@@ -1,9 +1,9 @@
-defmodule TykarWeb.MakaoRoomChannel do
+defmodule TykarWeb.MakaoLobbyChannel do
   use TykarWeb, :channel
   alias TykarWeb.Presence
 
   @impl true
-  def join("makao_room:lobby", _payload, socket) do
+  def join("makao:lobby", _payload, socket) do
     if authorized?(socket) do
       send(self(), :after_join)
       {:ok, socket}
@@ -14,8 +14,8 @@ defmodule TykarWeb.MakaoRoomChannel do
 
   @impl true
   def handle_info(:after_join, socket) do
-    {:ok, _} =
-      Presence.track(socket, socket.assigns.current_user.username, %{})
+    # {:ok, _} =
+    #   Presence.track(socket, socket.assigns.current_user.username, %{})
 
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
@@ -33,6 +33,25 @@ defmodule TykarWeb.MakaoRoomChannel do
   @impl true
   def handle_in("shout", payload, socket) do
     broadcast(socket, "shout", payload)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_in("new_room", _payload, socket) do
+    id = ?a..?z |> Enum.take_random(5) |> List.to_string()
+
+    {:ok, _pid} =
+      DynamicSupervisor.start_child(
+        Tykar.MakaoSupervisor,
+        {Tykar.Games.Makao, id}
+      )
+
+    broadcast(socket, "new_room", %{id: id})
+    {:reply, {:ok, %{id: id}}, socket}
+  end
+
+  @impl true
+  def handle_in(_, _payload, socket) do
     {:noreply, socket}
   end
 

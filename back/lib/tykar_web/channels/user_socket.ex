@@ -19,7 +19,8 @@ defmodule TykarWeb.UserSocket do
   # See the [`Channels guide`](https://hexdocs.pm/phoenix/channels.html)
   # for further details.
 
-  channel "makao_room:lobby", TykarWeb.MakaoRoomChannel
+  channel "makao:lobby", TykarWeb.MakaoLobbyChannel
+  channel "makao:*", TykarWeb.MakaoChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

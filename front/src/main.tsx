@@ -8,15 +8,22 @@ import { AuthProvider } from "./AuthProvider.tsx";
 import { ApiProvider } from "./api/ApiProvider.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ErrorPage } from "./error-page.tsx";
-import Makao from "./routes/makao.tsx";
+import Makao from "./routes/MakaoLobby.tsx";
+import Index from "./routes/Index.tsx";
+import { SocketProvider } from "./SocketProvider.tsx";
+import MakaoRoom from "./routes/MakaoRoom.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-    children: [{ path: "makao", element: <Makao /> }],
+    children: [
+      { path: "/", element: <Index /> },
+      { path: "makao", element: <Makao /> },
+    ],
   },
+  { path: "makao/:roomId", element: <MakaoRoom /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(
@@ -24,7 +31,9 @@ createRoot(document.getElementById("root")!).render(
     <ChakraProvider theme={theme}>
       <ApiProvider>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <SocketProvider>
+            <RouterProvider router={router} />
+          </SocketProvider>
         </AuthProvider>
       </ApiProvider>
     </ChakraProvider>

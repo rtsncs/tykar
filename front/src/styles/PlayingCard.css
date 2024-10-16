@@ -1,0 +1,13 @@
+.card {
+    background: white;
+    height: 200px;
+    width: 148px;
+    gap: 0;
+    border-radius: 5%;
+    border: 1px gray solid;
+}
+
+.rank {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+}
