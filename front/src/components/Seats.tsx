@@ -5,13 +5,18 @@ function Seats({
   players,
   onClick,
 }: {
-  players: [string, string, string, string];
+  players: [
+    { name: string }?,
+    { name: string }?,
+    { name: string }?,
+    { name: string }?,
+  ];
   onClick: (seat: number) => void;
 }) {
   return (
     <SimpleGrid columns={2} gap="8px">
       {players.map((player, i) => (
-        <Seat player={player} seat={i} onClick={onClick} key={i} />
+        <Seat player={player?.name} seat={i} onClick={onClick} key={i} />
       ))}
     </SimpleGrid>
   );

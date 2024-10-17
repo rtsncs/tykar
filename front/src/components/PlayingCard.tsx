@@ -1,5 +1,5 @@
 import "../styles/PlayingCard.css";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import React from "react";
 
 export type Rank =
@@ -38,21 +38,27 @@ function suit_to_color(suit: Suit) {
 function PlayingCard({
   card,
   onClick,
+  direction,
 }: {
   card?: PlayingCardProps;
   onClick?: (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     card: PlayingCardProps,
   ) => void;
+  direction?: "column" | "row";
 }) {
+  const wrapper_props =
+    direction == "column" ? { minHeight: "30px" } : { minWidth: "30px" };
+  const stack_direction = direction == "column" ? "row" : "column";
   return (
-    <Box minWidth="30px">
-      <VStack
-        className="card"
+    <Box {...wrapper_props}>
+      <Stack
+        className={direction == "column" ? "card-vertical" : "card"}
         onClick={(event) => {
           if (onClick) onClick(event, card!);
         }}
         p="8px"
+        direction={stack_direction}
       >
         {card ? (
           <>
@@ -60,7 +66,7 @@ function PlayingCard({
               <p className="rank">{card.rank}</p>
               {suit_to_char(card.suit)}
             </Box>
-            <Box my="auto" fontSize="5xl">
+            <Box color={suit_to_color(card.suit)} m="auto" fontSize="5xl">
               {suit_to_char(card.suit)}
             </Box>
             <Box
@@ -76,7 +82,7 @@ function PlayingCard({
         ) : (
           <Box bg="red" width="100%" height="100%" />
         )}
-      </VStack>
+      </Stack>
     </Box>
   );
 }

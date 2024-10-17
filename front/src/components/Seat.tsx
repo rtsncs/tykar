@@ -5,7 +5,7 @@ function Seat({
   seat,
   onClick,
 }: {
-  player: string;
+  player?: string;
   seat: number;
   onClick: (seat: number) => void;
 }) {

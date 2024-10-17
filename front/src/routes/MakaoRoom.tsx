@@ -4,14 +4,23 @@ import { useSocket } from "../SocketProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import UserList from "../components/UserList";
 import MakaoTable from "../components/MakaoTable";
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, Button, HStack } from "@chakra-ui/react";
 import Chat from "../components/Chat";
 import { ChatMessageProps } from "../components/ChatMessage";
 import Seats from "../components/Seats";
 import FullscreenSpinner from "../components/FullsreenSpinner";
+import { PlayingCardProps } from "../components/PlayingCard";
 
-interface Game {
-  players: [string, string, string, string];
+export interface MakaoGame {
+  players: [MakaoPlayer?, MakaoPlayer?, MakaoPlayer?, MakaoPlayer?];
+  status: "before" | "in_progress" | "after";
+  turn: number;
+  played: PlayingCardProps[];
+}
+
+export interface MakaoPlayer {
+  name: string;
+  hand: PlayingCardProps[] | number;
 }
 
 function MakaoRoom() {
@@ -25,7 +34,7 @@ function MakaoRoom() {
   const [users, setUsers] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<MakaoGame | null>(null);
 
   const onSendMessage = (content: string) => {
     channelRef.current?.push("shout", { content });
@@ -33,6 +42,19 @@ function MakaoRoom() {
 
   const onTakeSeat = (seat: number) => {
     channelRef.current?.push("take_seat", { seat });
+  };
+
+  const onStart = () => {
+    channelRef.current?.push("start", {});
+  };
+
+  const onPlayCard = (e: unknown, card: PlayingCardProps) => {
+    void e;
+    channelRef.current?.push("play", card);
+  };
+
+  const onDrawCard = () => {
+    channelRef.current?.push("draw", {});
   };
 
   useEffect(() => {
@@ -53,7 +75,7 @@ function MakaoRoom() {
       setMessages((messages) => [...messages, message]),
     );
 
-    channelRef.current.on("game", (game: Game) => setGame(game));
+    channelRef.current.on("game", (game: MakaoGame) => setGame(game));
 
     channelRef.current.join().receive("error", () => {
       navigate("..", { relative: "path" });
@@ -64,7 +86,7 @@ function MakaoRoom() {
       channelRef.current = null;
       presenceRef.current = null;
     };
-  }, [socket, roomId]);
+  }, [socket, roomId, navigate]);
 
   if (!game) {
     return <FullscreenSpinner />;
@@ -73,10 +95,15 @@ function MakaoRoom() {
   return (
     <>
       <HStack>
-        <MakaoTable />
+        <MakaoTable
+          game={game}
+          onDrawCard={onDrawCard}
+          onPlayCard={onPlayCard}
+        />
         <Box width="25vw">
           {roomId}
           <Seats players={game.players} onClick={onTakeSeat} />
+          <Button onClick={onStart}>Start</Button>
           <UserList users={users} />
           <Chat messages={messages} onSend={onSendMessage} />
         </Box>

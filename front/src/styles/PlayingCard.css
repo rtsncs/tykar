@@ -1,13 +1,26 @@
+.card-wrapper {
+  min-width: 30px;
+}
+
 .card {
-    background: white;
-    height: 200px;
-    width: 148px;
-    gap: 0;
-    border-radius: 5%;
-    border: 1px gray solid;
+  background: white;
+  border-radius: 5%;
+  border: 1px gray solid;
+  height: 200px;
+  width: 148px;
+  gap: 0;
+}
+
+.card-vertical {
+  background: white;
+  border-radius: 5%;
+  border: 1px gray solid;
+  width: 200px;
+  height: 148px;
+  gap: 0;
 }
 
 .rank {
-    font-size: 1.5rem;
-    line-height: 1.5rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
 }

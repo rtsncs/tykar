@@ -1,6 +1,10 @@
 defmodule TykarWeb.MakaoChannel do
   use TykarWeb, :channel
+
   alias TykarWeb.Presence
+  alias Tykar.Games.Card
+
+  intercept ["game"]
 
   @impl true
   def join(<<"makao:", room_id::binary-size(5)>>, _payload, socket) do
@@ -27,7 +31,13 @@ defmodule TykarWeb.MakaoChannel do
 
     push(socket, "presence_state", Presence.list(socket))
     game_state = GenServer.call(get_assigned_room(socket), "game")
-    push(socket, "game", game_state)
+    push(socket, "game", hide_other_players_hand(game_state, socket))
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_out("game", %Tykar.Games.Makao.State{} = state, socket) do
+    push(socket, "game", hide_other_players_hand(state, socket))
     {:noreply, socket}
   end
 
@@ -50,6 +60,27 @@ defmodule TykarWeb.MakaoChannel do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_in("start", _payload, socket) do
+    GenServer.cast(get_assigned_room(socket), "start")
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_in("play", payload, socket) do
+    with card <- Card.from_map(payload) do
+      GenServer.cast(get_assigned_room(socket), {"play", card, get_assigned_username(socket)})
+
+      {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_in("draw", _payload, socket) do
+    GenServer.cast(get_assigned_room(socket), {"draw", get_assigned_username(socket)})
+    {:noreply, socket}
+  end
+
   defp authorized?(socket) do
     if _user = get_assigned_user(socket) do
       true
@@ -68,5 +99,21 @@ defmodule TykarWeb.MakaoChannel do
 
   defp get_assigned_username(socket) do
     socket.assigns[:current_user].username
+  end
+
+  defp hide_other_players_hand(%Tykar.Games.Makao.State{} = state, socket) do
+    socket_username = get_assigned_username(socket)
+
+    %{
+      state
+      | players:
+          Enum.map(state.players, fn player ->
+            if player == nil or player.name == socket_username do
+              player
+            else
+              %{player | hand: Enum.count(player.hand)}
+            end
+          end)
+    }
   end
 end
