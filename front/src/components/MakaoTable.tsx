@@ -32,6 +32,7 @@ function MakaoTable({
                         "ml hand0 mr"
                         "bl bm br"`}
         templateRows={"1fr 1fr 1fr 0fr"}
+        templateColumns={"1fr 1fr 1fr"}
         h="100%"
         w="100%"
         alignItems="center"
@@ -46,26 +47,28 @@ function MakaoTable({
             turn={game.turn === (0 + mySeat) % 4}
             player={game.players[(0 + mySeat) % 4]}
             onClick={mySeat != -1 ? onPlayCard : undefined}
+            position="bottom"
           />
         </GridItem>
         <GridItem area="hand1">
           <PlayerHand
             turn={game.turn === (1 + mySeat) % 4}
             player={game.players[(1 + mySeat) % 4]}
-            direction="column"
+            position="left"
           />
         </GridItem>
         <GridItem area="hand2">
           <PlayerHand
             turn={game.turn === (2 + mySeat) % 4}
             player={game.players[(2 + mySeat) % 4]}
+            position="top"
           />
         </GridItem>
         <GridItem area="hand3">
           <PlayerHand
             turn={game.turn === (3 + mySeat) % 4}
             player={game.players[(3 + mySeat) % 4]}
-            direction="column"
+            position="right"
           />
         </GridItem>
         <GridItem area="bm">
