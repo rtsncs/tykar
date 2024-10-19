@@ -36,7 +36,7 @@ defmodule TykarWeb.MakaoChannel do
   end
 
   @impl true
-  def handle_out("game", %Tykar.Games.Makao.State{} = state, socket) do
+  def handle_out("game", %Tykar.Games.Makao{} = state, socket) do
     push(socket, "game", hide_other_players_hand(state, socket))
     {:noreply, socket}
   end
@@ -101,7 +101,7 @@ defmodule TykarWeb.MakaoChannel do
     socket.assigns[:current_user].username
   end
 
-  defp hide_other_players_hand(%Tykar.Games.Makao.State{} = state, socket) do
+  defp hide_other_players_hand(%Tykar.Games.Makao{} = state, socket) do
     socket_username = get_assigned_username(socket)
 
     %{

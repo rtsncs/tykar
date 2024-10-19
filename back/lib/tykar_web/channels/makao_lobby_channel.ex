@@ -43,7 +43,7 @@ defmodule TykarWeb.MakaoLobbyChannel do
     {:ok, _pid} =
       DynamicSupervisor.start_child(
         Tykar.MakaoSupervisor,
-        {Tykar.Games.Makao, id}
+        {Tykar.Games.Makao.Server, id}
       )
 
     broadcast(socket, "new_room", %{id: id})
