@@ -1,5 +1,5 @@
 import "../styles/PlayingCard.css";
-import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import React from "react";
 
 export type Rank =
@@ -39,6 +39,7 @@ function PlayingCard({
   card,
   onClick,
   direction,
+  isDisabled,
 }: {
   card?: PlayingCardProps;
   onClick?: (
@@ -46,19 +47,25 @@ function PlayingCard({
     card: PlayingCardProps,
   ) => void;
   direction?: "column" | "row";
+  isDisabled?: boolean;
 }) {
+  const handleClick = onClick
+    ? (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (!isDisabled) onClick(event, card!);
+      }
+    : undefined;
   const wrapper_props =
     direction == "column" ? { minHeight: "30px" } : { minWidth: "30px" };
   const stack_direction = direction == "column" ? "row" : "column";
+  const cursor = onClick ? "pointer" : "default";
   return (
-    <Box {...wrapper_props}>
+    <Box {...wrapper_props} position="relative">
       <Stack
-        className={direction == "column" ? "card-vertical" : "card"}
-        onClick={(event) => {
-          if (onClick) onClick(event, card!);
-        }}
+        className={direction == "column" ? "card card-vertical" : "card"}
+        onClick={handleClick}
         p="8px"
         direction={stack_direction}
+        cursor={cursor}
       >
         {card ? (
           <>
@@ -83,6 +90,7 @@ function PlayingCard({
           <Box bg="red" width="100%" height="100%" />
         )}
       </Stack>
+      {isDisabled && <Box className="card-disabled"></Box>}
     </Box>
   );
 }

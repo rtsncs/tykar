@@ -3,6 +3,7 @@ defmodule TykarWeb.MakaoChannel do
 
   alias TykarWeb.Presence
   alias Tykar.Games.Card
+  alias Tykar.Games.Makao
 
   intercept ["game"]
 
@@ -31,13 +32,19 @@ defmodule TykarWeb.MakaoChannel do
 
     push(socket, "presence_state", Presence.list(socket))
     game_state = GenServer.call(get_assigned_room(socket), "game")
-    push(socket, "game", hide_other_players_hand(game_state, socket))
+
+    push(
+      socket,
+      "game",
+      game_state |> Makao.hide_other_players_cards(get_assigned_username(socket))
+    )
+
     {:noreply, socket}
   end
 
   @impl true
-  def handle_out("game", %Tykar.Games.Makao{} = state, socket) do
-    push(socket, "game", hide_other_players_hand(state, socket))
+  def handle_out("game", %Makao{} = state, socket) do
+    push(socket, "game", state |> Makao.hide_other_players_cards(get_assigned_username(socket)))
     {:noreply, socket}
   end
 
@@ -81,6 +88,12 @@ defmodule TykarWeb.MakaoChannel do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_in("pass", _payload, socket) do
+    GenServer.cast(get_assigned_room(socket), {"pass", get_assigned_username(socket)})
+    {:noreply, socket}
+  end
+
   defp authorized?(socket) do
     if _user = get_assigned_user(socket) do
       true
@@ -99,21 +112,5 @@ defmodule TykarWeb.MakaoChannel do
 
   defp get_assigned_username(socket) do
     socket.assigns[:current_user].username
-  end
-
-  defp hide_other_players_hand(%Tykar.Games.Makao{} = state, socket) do
-    socket_username = get_assigned_username(socket)
-
-    %{
-      state
-      | players:
-          Enum.map(state.players, fn player ->
-            if player == nil or player.name == socket_username do
-              player
-            else
-              %{player | hand: Enum.count(player.hand)}
-            end
-          end)
-    }
   end
 end

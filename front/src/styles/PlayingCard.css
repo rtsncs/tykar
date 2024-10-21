@@ -12,12 +12,20 @@
 }
 
 .card-vertical {
-  background: white;
-  border-radius: 5%;
-  border: 1px gray solid;
   width: 200px;
   height: 148px;
+}
+
+.card-disabled {
+  position: absolute;
+  top: 0;
+  background: gray;
+  opacity: 50%;
+  border-radius: 5%;
+  height: 200px;
+  width: 148px;
   gap: 0;
+  cursor: not-allowed;
 }
 
 .rank {

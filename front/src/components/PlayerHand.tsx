@@ -8,6 +8,7 @@ function PlayerHand({
   position,
   onClick,
   turn,
+  lastCard,
 }: {
   player?: MakaoPlayer;
   position: "top" | "bottom" | "left" | "right";
@@ -17,6 +18,7 @@ function PlayerHand({
     card: PlayingCardProps,
   ) => void;
   turn: boolean;
+  lastCard?: PlayingCardProps;
 }) {
   if (!player) return;
   let flexDirection: "column" | "column-reverse" | "row" | "row-reverse";
@@ -46,6 +48,16 @@ function PlayerHand({
       break;
   }
 
+  let isDisabled;
+
+  if (lastCard && player.hand instanceof Array) {
+    isDisabled = player.hand.map((card) => {
+      if (lastCard.rank == card.rank || lastCard.suit == card.suit)
+        return false;
+      return true;
+    });
+  }
+
   return (
     <Flex
       direction={flexDirection}
@@ -55,11 +67,13 @@ function PlayerHand({
     >
       <Box style={{ writingMode }}>
         {turn ? <b>{`>${player.name}<`}</b> : player.name}
+        {player.blocked !== 0 && ` [${player.blocked}]`}
       </Box>
       <CardHand
         cards={player.hand}
         direction={cardsDirection}
         onClick={onClick}
+        isDisabled={isDisabled}
       />
     </Flex>
   );

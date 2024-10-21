@@ -1,4 +1,4 @@
-import { Box, Button, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Grid, GridItem } from "@chakra-ui/react";
 import CardHand from "./CardHand";
 import { MakaoGame } from "../routes/MakaoRoom";
 import { PlayingCardProps } from "./PlayingCard";
@@ -9,6 +9,7 @@ function MakaoTable({
   game,
   onPlayCard,
   onDrawCard,
+  onPass,
 }: {
   game: MakaoGame;
   onPlayCard: (
@@ -16,13 +17,14 @@ function MakaoTable({
     card: PlayingCardProps,
   ) => void;
   onDrawCard: () => void;
+  onPass: () => void;
 }) {
   const { session } = useSession();
 
-  const mySeat = Math.max(
-    game.players.findIndex((p) => p && p.name === session?.username),
-    0,
+  const mySeat = game.players.findIndex(
+    (p) => p && p.name === session?.username,
   );
+  const seatOffset = mySeat === -1 ? 0 : mySeat;
 
   return (
     <Box bg="green" w="100%" h="100vh">
@@ -40,40 +42,65 @@ function MakaoTable({
         pb="16px"
       >
         <GridItem area="played">
-          <CardHand cards={game.played} />
+          <CardHand cards={game.played.slice(0, 5)} />
+        </GridItem>
+        <GridItem area="tl" color="white">
+          {game.toDraw > 0 && <Box>To draw: {game.toDraw}</Box>}
+          {game.toBlock > 0 && <Box>To block: {game.toBlock}</Box>}
         </GridItem>
         <GridItem area="hand0">
           <PlayerHand
-            turn={game.turn === (0 + mySeat) % 4}
-            player={game.players[(0 + mySeat) % 4]}
-            onClick={mySeat != -1 ? onPlayCard : undefined}
+            turn={game.turn === (0 + seatOffset) % 4}
+            player={game.players[(0 + seatOffset) % 4]}
+            onClick={seatOffset != -1 ? onPlayCard : undefined}
             position="bottom"
+            lastCard={mySeat == game.turn ? game.played[0] : undefined}
           />
         </GridItem>
         <GridItem area="hand1">
           <PlayerHand
-            turn={game.turn === (1 + mySeat) % 4}
-            player={game.players[(1 + mySeat) % 4]}
+            turn={game.turn === (1 + seatOffset) % 4}
+            player={game.players[(1 + seatOffset) % 4]}
             position="left"
           />
         </GridItem>
         <GridItem area="hand2">
           <PlayerHand
-            turn={game.turn === (2 + mySeat) % 4}
-            player={game.players[(2 + mySeat) % 4]}
+            turn={game.turn === (2 + seatOffset) % 4}
+            player={game.players[(2 + seatOffset) % 4]}
             position="top"
           />
         </GridItem>
         <GridItem area="hand3">
           <PlayerHand
-            turn={game.turn === (3 + mySeat) % 4}
-            player={game.players[(3 + mySeat) % 4]}
+            turn={game.turn === (3 + seatOffset) % 4}
+            player={game.players[(3 + seatOffset) % 4]}
             position="right"
           />
         </GridItem>
-        <GridItem area="bm">
-          <Button onClick={onDrawCard}>Draw</Button>
-        </GridItem>
+        {mySeat !== -1 && (
+          <GridItem area="bm">
+            <ButtonGroup>
+              <Button
+                onClick={onPass}
+                isDisabled={
+                  game.turn !== mySeat ||
+                  (game.turn !== game.lastTurn && game.toBlock === 0 && false)
+                }
+              >
+                Pass
+              </Button>
+              <Button
+                onClick={onDrawCard}
+                isDisabled={
+                  game.turn !== mySeat || (game.turn === game.lastTurn && false)
+                }
+              >
+                Draw
+              </Button>
+            </ButtonGroup>
+          </GridItem>
+        )}
       </Grid>
     </Box>
   );

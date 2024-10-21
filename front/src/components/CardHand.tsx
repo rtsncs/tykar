@@ -3,10 +3,12 @@ import PlayingCard, { PlayingCardProps } from "./PlayingCard";
 
 function CardHand({
   cards,
+  isDisabled,
   direction,
   onClick,
 }: {
   cards: PlayingCardProps[] | number;
+  isDisabled?: boolean[];
   direction?: "column" | "row";
   onClick?: (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -25,6 +27,7 @@ function CardHand({
       card: isArray ? cards[cardCount - i - 1] : undefined,
       onClick: isArray ? onClick : undefined,
       direction: direction ?? "row",
+      isDisabled: isDisabled?.at(cardCount - i - 1),
     };
     const card = <PlayingCard key={i} {...props} />;
     cardElements.push(card);

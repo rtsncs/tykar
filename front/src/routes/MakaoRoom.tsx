@@ -15,12 +15,17 @@ export interface MakaoGame {
   players: [MakaoPlayer?, MakaoPlayer?, MakaoPlayer?, MakaoPlayer?];
   status: "before" | "in_progress" | "after";
   turn: number;
+  lastTurn: number;
   played: PlayingCardProps[];
+  toDraw: number;
+  toBlock: number;
+  drawn?: PlayingCardProps;
 }
 
 export interface MakaoPlayer {
   name: string;
   hand: PlayingCardProps[] | number;
+  blocked: number;
 }
 
 function MakaoRoom() {
@@ -55,6 +60,10 @@ function MakaoRoom() {
 
   const onDrawCard = () => {
     channelRef.current?.push("draw", {});
+  };
+
+  const onPass = () => {
+    channelRef.current?.push("pass", {});
   };
 
   useEffect(() => {
@@ -99,6 +108,7 @@ function MakaoRoom() {
           game={game}
           onDrawCard={onDrawCard}
           onPlayCard={onPlayCard}
+          onPass={onPass}
         />
         <Box width="25vw">
           {roomId}

@@ -2,6 +2,7 @@ defmodule Tykar.Games.Makao.Player do
   @derive Jason.Encoder
   defstruct [
     :name,
-    hand: []
+    hand: [],
+    blocked: 0
   ]
 end
