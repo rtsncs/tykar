@@ -21,6 +21,7 @@ export type Suit = "Hearts" | "Diamonds" | "Clubs" | "Spades";
 export interface PlayingCardProps {
   rank: Rank;
   suit: Suit;
+  disabled?: boolean;
 }
 
 function suit_to_char(suit: Suit) {
@@ -39,7 +40,6 @@ function PlayingCard({
   card,
   onClick,
   direction,
-  isDisabled,
 }: {
   card?: PlayingCardProps;
   onClick?: (
@@ -47,11 +47,10 @@ function PlayingCard({
     card: PlayingCardProps,
   ) => void;
   direction?: "column" | "row";
-  isDisabled?: boolean;
 }) {
   const handleClick = onClick
     ? (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (!isDisabled) onClick(event, card!);
+        if (!card?.disabled) onClick(event, card!);
       }
     : undefined;
   const wrapper_props =
@@ -90,7 +89,7 @@ function PlayingCard({
           <Box bg="red" width="100%" height="100%" />
         )}
       </Stack>
-      {isDisabled && <Box className="card-disabled"></Box>}
+      {card?.disabled && <Box className="card-disabled"></Box>}
     </Box>
   );
 }

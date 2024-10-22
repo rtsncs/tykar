@@ -15,11 +15,25 @@ defmodule Tykar.Games.Makao do
     toDraw: 0,
     toBlock: 0,
     demand: nil,
+    demandTurns: 0,
     drawn: nil
   ]
 
+  defguardp is_functional_card(card)
+            when card.rank in ["A", "2", "3", "4", "J"] or
+                   (card.rank == "K" and card.suit in ["Spades", "Hearts"])
+
+  defguardp is_rank_demand(demand)
+            when demand in ["5", "6", "7", "8", "9", "10", "Q"]
+
+  defguardp is_suit_demand(demand)
+            when demand in ["Spades", "Hearts", "Diamonds", "Clubs"]
+
+  defguardp is_new_turn(makao)
+            when makao.lastTurn != makao.turn
+
   def start(%Makao{} = makao) do
-    if Enum.count(makao.players, fn x -> x != nil end) < 2 or makao.status == "in_progress" do
+    if player_count(makao) < 2 or makao.status == "in_progress" do
       :err
     else
       new_makao =
@@ -36,21 +50,22 @@ defmodule Tykar.Games.Makao do
   end
 
   def take_seat(%Makao{} = makao, seat, username) do
-    if seat_taken?(makao, seat) and
+    if !seat_taken?(makao, seat) and
          Enum.all?(makao.players, fn x -> x == nil or x.name != username end) do
-      :err
-    else
       {:ok, %{makao | players: List.replace_at(makao.players, seat, %Player{name: username})}}
+    else
+      :err
     end
   end
 
   def handle_play(%Makao{status: "in_progress"} = makao, %Card{} = card, username) do
     if players_turn?(makao, username) and !blocked?(makao) and legal?(makao, card) do
       cond do
-        is_new_turn?(makao) or makao.drawn == nil ->
+        is_new_turn(makao) or makao.drawn == nil or
+            (makao.drawn == card and card.rank in ["A", "J"]) ->
           {:ok, makao |> play(card) |> finish_action()}
 
-        !is_new_turn?(makao) and makao.drawn == card ->
+        !is_new_turn(makao) and makao.drawn == card ->
           {:ok, makao |> play(card) |> finish_action |> finish_turn()}
 
         true ->
@@ -65,12 +80,38 @@ defmodule Tykar.Games.Makao do
     :err
   end
 
+  def handle_demand(%Makao{status: "in_progress"} = makao, demand, username) do
+    if players_turn?(makao, username) and !is_new_turn(makao) do
+      last_played = List.first(makao.played)
+
+      cond do
+        last_played.rank == "A" and demand in ["Spades", "Hearts", "Diamonds", "Clubs"] ->
+          {:ok, %{makao | demand: demand, demandTurns: 1} |> finish_action() |> finish_turn()}
+
+        last_played.rank == "J" and demand in ["5", "6", "7", "8", "9", "10", "Q"] ->
+          {:ok,
+           %{makao | demand: demand, demandTurns: player_count(makao) + 1}
+           |> finish_action()
+           |> finish_turn()}
+
+        true ->
+          :err
+      end
+    else
+      :err
+    end
+  end
+
+  def handle_demand(_makao, _card, _username) do
+    :err
+  end
+
   def handle_pass(%Makao{status: "in_progress"} = makao, username) do
     if players_turn?(makao, username) and
          (blocked?(makao) or
-            (!is_new_turn?(makao) and (makao.drawn == nil or makao.toDraw == 0)) or
-            (is_new_turn?(makao) and makao.toBlock > 0)) do
-      if is_new_turn?(makao) do
+            (!is_new_turn(makao) and (makao.drawn == nil or makao.toDraw == 0)) or
+            (is_new_turn(makao) and makao.toBlock > 0)) do
+      if is_new_turn(makao) do
         {:ok, %{makao | lastTurn: makao.turn} |> block_player |> finish_action |> finish_turn()}
       else
         {:ok, %{makao | lastTurn: makao.turn} |> finish_action |> finish_turn()}
@@ -87,10 +128,10 @@ defmodule Tykar.Games.Makao do
   def handle_draw(%Makao{status: "in_progress"} = makao, username) do
     if players_turn?(makao, username) and !blocked?(makao) do
       cond do
-        is_new_turn?(makao) and makao.toBlock == 0 ->
+        is_new_turn(makao) and makao.toBlock == 0 ->
           {:ok, makao |> draw_first() |> finish_action()}
 
-        !is_new_turn?(makao) and makao.drawn != nil and makao.toDraw != 0 ->
+        !is_new_turn(makao) and makao.drawn != nil and makao.toDraw != 0 ->
           {:ok, makao |> draw() |> finish_action |> finish_turn()}
 
         true ->
@@ -111,7 +152,14 @@ defmodule Tykar.Games.Makao do
     new_players =
       List.replace_at(makao.players, makao.turn, %{player | hand: List.delete(player.hand, card)})
 
-    %{makao | players: new_players, played: [card | makao.played]}
+    new_demand =
+      if is_suit_demand(makao.demand) do
+        nil
+      else
+        makao.demand
+      end
+
+    %{makao | players: new_players, played: [card | makao.played], demand: new_demand}
     |> apply_card_effect(card)
   end
 
@@ -181,6 +229,31 @@ defmodule Tykar.Games.Makao do
     else
       makao
     end
+  end
+
+  defp legal?(%Makao{demand: demand}, %Card{} = card)
+       when demand != nil and card.rank not in ["A", "J"] and is_functional_card(card) do
+    false
+  end
+
+  defp legal?(%Makao{demand: demand}, %Card{} = card)
+       when is_rank_demand(demand) and card.rank != demand and card.rank != "J" do
+    false
+  end
+
+  defp legal?(%Makao{demand: demand}, %Card{} = card)
+       when is_rank_demand(demand) and (card.rank == demand or card.rank == "J") do
+    true
+  end
+
+  defp legal?(%Makao{demand: demand}, %Card{} = card)
+       when is_suit_demand(demand) and card.suit != demand and card.rank != "A" do
+    false
+  end
+
+  defp legal?(%Makao{demand: demand}, %Card{} = card)
+       when is_suit_demand(demand) and (card.suit == demand or card.rank == "A") do
+    true
   end
 
   defp legal?(%Makao{toBlock: toBlock}, %Card{} = card)
@@ -268,19 +341,26 @@ defmodule Tykar.Games.Makao do
     current_player(makao).blocked > 0
   end
 
-  defp is_new_turn?(%Makao{} = makao) do
-    makao.lastTurn != makao.turn
-  end
-
   def hide_other_players_cards(%Makao{} = makao, username) do
     %{
       makao
       | players:
           Enum.map(makao.players, fn player ->
-            if player == nil or player.name == username do
-              player
-            else
-              %{player | hand: Enum.count(player.hand)}
+            cond do
+              player != nil and player.name == username and players_turn?(makao, username) ->
+                %{
+                  player
+                  | hand:
+                      Enum.map(player.hand, fn card ->
+                        %{rank: card.rank, suit: card.suit, disabled: not legal?(makao, card)}
+                      end)
+                }
+
+              player == nil or player.name == username ->
+                player
+
+              true ->
+                %{player | hand: Enum.count(player.hand)}
             end
           end),
         drawn:
@@ -300,11 +380,26 @@ defmodule Tykar.Games.Makao do
     %Player{} = player = current_player(makao)
     new_player = %{player | blocked: max(player.blocked - 1, 0)}
 
+    new_demand =
+      cond do
+        makao.demandTurns <= 1 and is_rank_demand(makao.demand) ->
+          nil
+
+        true ->
+          makao.demand
+      end
+
     %{
       makao
       | turn: get_next_player(makao),
         players: List.replace_at(makao.players, makao.turn, new_player),
-        drawn: nil
+        drawn: nil,
+        demandTurns: max(makao.demandTurns - 1, 0),
+        demand: new_demand
     }
+  end
+
+  defp player_count(%Makao{} = makao) do
+    Enum.count(makao.players, fn x -> not is_nil(x) end)
   end
 end

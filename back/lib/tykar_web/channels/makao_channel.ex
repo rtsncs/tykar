@@ -83,6 +83,13 @@ defmodule TykarWeb.MakaoChannel do
   end
 
   @impl true
+  def handle_in("demand", %{"demand" => demand}, socket) do
+    GenServer.cast(get_assigned_room(socket), {"demand", demand, get_assigned_username(socket)})
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_in("draw", _payload, socket) do
     GenServer.cast(get_assigned_room(socket), {"draw", get_assigned_username(socket)})
     {:noreply, socket}

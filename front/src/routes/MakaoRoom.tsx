@@ -20,6 +20,7 @@ export interface MakaoGame {
   toDraw: number;
   toBlock: number;
   drawn?: PlayingCardProps;
+  demand: string;
 }
 
 export interface MakaoPlayer {
@@ -60,6 +61,10 @@ function MakaoRoom() {
 
   const onDrawCard = () => {
     channelRef.current?.push("draw", {});
+  };
+
+  const onDemand = (demand: string) => {
+    channelRef.current?.push("demand", { demand });
   };
 
   const onPass = () => {
@@ -108,6 +113,7 @@ function MakaoRoom() {
           game={game}
           onDrawCard={onDrawCard}
           onPlayCard={onPlayCard}
+          onDemand={onDemand}
           onPass={onPass}
         />
         <Box width="25vw">

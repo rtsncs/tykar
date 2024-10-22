@@ -57,6 +57,18 @@ defmodule Tykar.Games.Makao.Server do
   end
 
   @impl true
+  def handle_cast({"demand", demand, username}, makao) do
+    case Makao.handle_demand(makao, demand, username) do
+      {:ok, new_makao} ->
+        broadcast_game(new_makao)
+        {:noreply, new_makao}
+
+      :err ->
+        {:noreply, makao}
+    end
+  end
+
+  @impl true
   def handle_cast({"draw", username}, %Makao{} = makao) do
     case Makao.handle_draw(makao, username) do
       {:ok, new_makao} ->
