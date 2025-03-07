@@ -7,7 +7,7 @@ defmodule Tykar.Games.Makao do
   defstruct [
     :roomId,
     players: List.duplicate(nil, 4),
-    status: "before",
+    status: "setup",
     turn: -1,
     lastTurn: -1,
     stock: Tykar.Games.deck(),
@@ -16,7 +16,8 @@ defmodule Tykar.Games.Makao do
     toBlock: 0,
     demand: nil,
     demandTurns: 0,
-    drawn: nil
+    drawn: nil,
+    winners: []
   ]
 
   defguardp is_functional_card(card)
@@ -36,8 +37,20 @@ defmodule Tykar.Games.Makao do
     if player_count(makao) < 2 or makao.status == "in_progress" do
       :err
     else
+      new_players =
+        Enum.map(
+          makao.players,
+          fn x ->
+            if x != nil do
+              %{x | blocked: 0, hand: []}
+            else
+              nil
+            end
+          end
+        )
+
       new_makao =
-        %Makao{roomId: makao.roomId, players: makao.players, turn: 0, status: "in_progress"}
+        %Makao{roomId: makao.roomId, players: new_players, turn: 0, status: "in_progress"}
         |> shuffle_stock()
         |> deal()
 
@@ -149,8 +162,17 @@ defmodule Tykar.Games.Makao do
   defp play(%Makao{} = makao, %Card{} = card) do
     %Player{} = player = current_player(makao)
 
+    new_hand = List.delete(player.hand, card)
+
+    new_winners =
+      if new_hand == [] do
+        [player.name | makao.winners]
+      else
+        makao.winners
+      end
+
     new_players =
-      List.replace_at(makao.players, makao.turn, %{player | hand: List.delete(player.hand, card)})
+      List.replace_at(makao.players, makao.turn, %{player | hand: new_hand})
 
     new_demand =
       if is_suit_demand(makao.demand) do
@@ -159,7 +181,21 @@ defmodule Tykar.Games.Makao do
         makao.demand
       end
 
-    %{makao | players: new_players, played: [card | makao.played], demand: new_demand}
+    new_status =
+      if Enum.count(new_winners) == player_count(makao) - 1 do
+        "finished"
+      else
+        makao.status
+      end
+
+    %{
+      makao
+      | players: new_players,
+        played: [card | makao.played],
+        demand: new_demand,
+        winners: new_winners,
+        status: new_status
+    }
     |> apply_card_effect(card)
   end
 
@@ -286,7 +322,9 @@ defmodule Tykar.Games.Makao do
   defp get_next_player(%Makao{} = makao) do
     new_makao = %{makao | turn: rem(makao.turn + 1, 4)}
 
-    if Enum.at(makao.players, new_makao.turn) == nil do
+    next_player = Enum.at(makao.players, new_makao.turn)
+
+    if next_player == nil or next_player.hand == [] do
       get_next_player(new_makao)
     else
       new_makao.turn

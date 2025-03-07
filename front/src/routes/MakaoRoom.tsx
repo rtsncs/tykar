@@ -13,7 +13,7 @@ import { PlayingCardProps } from "../components/PlayingCard";
 
 export interface MakaoGame {
   players: [MakaoPlayer?, MakaoPlayer?, MakaoPlayer?, MakaoPlayer?];
-  status: "before" | "in_progress" | "after";
+  status: "setup" | "in_progress" | "finished";
   turn: number;
   lastTurn: number;
   played: PlayingCardProps[];
@@ -21,6 +21,7 @@ export interface MakaoGame {
   toBlock: number;
   drawn?: PlayingCardProps;
   demand: string;
+  winners: [string];
 }
 
 export interface MakaoPlayer {

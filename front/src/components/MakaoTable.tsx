@@ -12,6 +12,7 @@ import { PlayingCardProps } from "./PlayingCard";
 import { useSession } from "../AuthProvider";
 import PlayerHand from "./PlayerHand";
 import MakaoDemandModal from "./MakaoDemandModal";
+import MakaoGameFinishedModal from "./MakaoGameFinishedModal";
 
 function MakaoTable({
   game,
@@ -39,7 +40,7 @@ function MakaoTable({
   const seatOffset = mySeat === -1 ? 0 : mySeat;
 
   return (
-    <Box bg="green" w="100%" h="100vh">
+    <Box bg="green" w="100%" h="100vh" position="relative">
       <Grid
         templateAreas={`"tl hand2 tr"
                         "hand1 played hand3"
@@ -136,6 +137,11 @@ function MakaoTable({
           type={"rank"}
           onClose={onClose}
           onSelect={onDemand}
+        />
+      )}
+      {game.status === "finished" && (
+        <MakaoGameFinishedModal
+          loser={game.players.find((player) => player?.hand)?.name || "unknown"}
         />
       )}
     </Box>
