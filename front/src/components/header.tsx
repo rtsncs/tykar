@@ -3,27 +3,23 @@ import {
   chakra,
   Flex,
   Heading,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import Login from "./login";
 import { useSession } from "../AuthProvider";
 import Register from "./register";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
 function Header() {
   const {
-    isOpen: isLoginOpen,
+    open: isLoginOpen,
     onOpen: onLoginOpen,
     onClose: onLoginClose,
   } = useDisclosure();
 
   const {
-    isOpen: isRegisterOpen,
+    open: isRegisterOpen,
     onOpen: onRegisterOpen,
     onClose: onRegisterClose,
   } = useDisclosure();
@@ -43,14 +39,14 @@ function Header() {
           <Heading>Tykar</Heading>
           <Spacer />
           {session ? (
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                {session.username}
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => void logout()}>Logout</MenuItem>
-              </MenuList>
-            </Menu>
+            <MenuRoot>
+              <MenuTrigger as={Button}>{session.username}</MenuTrigger>
+              <MenuContent>
+                <MenuItem value="logout" onClick={() => void logout()}>
+                  Logout
+                </MenuItem>
+              </MenuContent>
+            </MenuRoot>
           ) : (
             <>
               <Button onClick={onLoginOpen}>Login</Button>

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { ChakraProvider } from "@chakra-ui/react";
-import theme from "./theme.ts";
+import system from "./theme.ts";
 import { AuthProvider } from "./AuthProvider.tsx";
 import { ApiProvider } from "./api/ApiProvider.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -12,6 +12,7 @@ import Makao from "./routes/MakaoLobby.tsx";
 import Index from "./routes/Index.tsx";
 import { SocketProvider } from "./SocketProvider.tsx";
 import MakaoRoom from "./routes/MakaoRoom.tsx";
+import { ColorModeProvider } from "./components/ui/color-mode.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,14 +29,16 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ChakraProvider theme={theme}>
-      <ApiProvider>
-        <AuthProvider>
-          <SocketProvider>
-            <RouterProvider router={router} />
-          </SocketProvider>
-        </AuthProvider>
-      </ApiProvider>
+    <ChakraProvider value={system}>
+      <ColorModeProvider>
+        <ApiProvider>
+          <AuthProvider>
+            <SocketProvider>
+              <RouterProvider router={router} />
+            </SocketProvider>
+          </AuthProvider>
+        </ApiProvider>
+      </ColorModeProvider>
     </ChakraProvider>
   </StrictMode>,
 );

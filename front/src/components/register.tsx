@@ -1,21 +1,15 @@
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, Input, Spinner, Field } from "@chakra-ui/react";
 import { FormEvent, SetStateAction, useState } from "react";
 import { useApi } from "../api/ApiProvider";
 import type { components } from "../api/api";
+import {
+  DialogRoot,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogCloseTrigger,
+} from "./ui/dialog";
 
 type RegisterError = components["schemas"]["RegisterError"];
 
@@ -68,24 +62,22 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Register</ModalHeader>
-        <ModalCloseButton />
+    <DialogRoot open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>Register</DialogHeader>
         <form onSubmit={onRegister}>
-          <ModalBody
+          <DialogBody
             display="flex"
             flexDir="column"
             alignItems="center"
             gap={4}
           >
             {requestSend && <Spinner size="lg" />}
-            <FormControl
-              isRequired
-              isInvalid={!username || errors?.errors.username != null}
+            <Field.Root
+              required
+              invalid={!username || errors?.errors.username != null}
             >
-              <FormLabel>Username</FormLabel>
+              <Field.Label>Username</Field.Label>
               <Input
                 placeholder="Username"
                 type="text"
@@ -94,26 +86,26 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
                 maxLength={32}
                 onChange={handleNameChange}
               />
-              <FormErrorMessage>{errors?.errors.username}</FormErrorMessage>
-            </FormControl>
-            <FormControl
-              isRequired
-              isInvalid={!email || errors?.errors.email != null}
+              <Field.ErrorText>{errors?.errors.username}</Field.ErrorText>
+            </Field.Root>
+            <Field.Root
+              required
+              invalid={!email || errors?.errors.email != null}
             >
-              <FormLabel>Email</FormLabel>
+              <Field.Label>Email</Field.Label>
               <Input
                 placeholder="Email"
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
               />
-              <FormErrorMessage>{errors?.errors.email}</FormErrorMessage>
-            </FormControl>
-            <FormControl
-              isRequired
-              isInvalid={password.length < 8 || errors?.errors.password != null}
+              <Field.ErrorText>{errors?.errors.email}</Field.ErrorText>
+            </Field.Root>
+            <Field.Root
+              required
+              invalid={password.length < 8 || errors?.errors.password != null}
             >
-              <FormLabel>Password</FormLabel>
+              <Field.Label>Password</Field.Label>
               <Input
                 placeholder="Password"
                 type="password"
@@ -121,30 +113,31 @@ function Register(props: { isOpen: boolean; onClose: () => void }) {
                 minLength={8}
                 onChange={handlePasswordChange}
               />
-              <FormErrorMessage>{errors?.errors.password}</FormErrorMessage>
-            </FormControl>
-            <FormControl isRequired isInvalid={passwordRepeat !== password}>
-              <FormLabel>Repeat password</FormLabel>
+              <Field.ErrorText>{errors?.errors.password}</Field.ErrorText>
+            </Field.Root>
+            <Field.Root required invalid={passwordRepeat !== password}>
+              <Field.Label>Repeat password</Field.Label>
               <Input
                 placeholder="Repeat password"
                 type="password"
                 value={passwordRepeat}
                 onChange={handlePasswordRepeatChange}
               />
-            </FormControl>
-          </ModalBody>
+            </Field.Root>
+          </DialogBody>
 
-          <ModalFooter>
+          <DialogFooter>
             <Button variant="ghost" onClick={onClose} mr={3}>
               Cancel
             </Button>
             <Button colorScheme="blue" type="submit">
               Register
             </Button>
-          </ModalFooter>
+          </DialogFooter>
+          <DialogCloseTrigger />
         </form>
-      </ModalContent>
-    </Modal>
+      </DialogContent>
+    </DialogRoot>
   );
 }
 

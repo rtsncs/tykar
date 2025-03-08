@@ -32,7 +32,7 @@ function MakaoTable({
 }) {
   const { session } = useSession();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   const mySeat = game.players.findIndex(
     (p) => p && p.name === session?.username,
@@ -96,7 +96,7 @@ function MakaoTable({
             <ButtonGroup>
               <Button
                 onClick={onPass}
-                isDisabled={
+                disabled={
                   game.turn !== mySeat ||
                   (game.turn !== game.lastTurn && game.toBlock === 0 && false)
                 }
@@ -105,7 +105,7 @@ function MakaoTable({
               </Button>
               <Button
                 onClick={onDrawCard}
-                isDisabled={
+                disabled={
                   game.turn !== mySeat || (game.turn === game.lastTurn && false)
                 }
               >
@@ -113,7 +113,7 @@ function MakaoTable({
               </Button>
               <Button
                 onClick={onOpen}
-                isDisabled={
+                disabled={
                   game.turn !== mySeat || (game.turn === game.lastTurn && false)
                 }
               >
@@ -123,17 +123,17 @@ function MakaoTable({
           </GridItem>
         )}
       </Grid>
-      {isOpen && game.lastTurn == game.turn && game.played[0].rank === "A" && (
+      {open && game.lastTurn == game.turn && game.played[0].rank === "A" && (
         <MakaoDemandModal
-          isOpen={isOpen}
+          isOpen={open}
           type={"suit"}
           onClose={onClose}
           onSelect={onDemand}
         />
       )}
-      {isOpen && game.lastTurn == game.turn && game.played[0].rank === "J" && (
+      {open && game.lastTurn == game.turn && game.played[0].rank === "J" && (
         <MakaoDemandModal
-          isOpen={isOpen}
+          isOpen={open}
           type={"rank"}
           onClose={onClose}
           onSelect={onDemand}
@@ -141,7 +141,7 @@ function MakaoTable({
       )}
       {game.status === "finished" && (
         <MakaoGameFinishedModal
-          loser={game.players.find((player) => player?.hand)?.name || "unknown"}
+          loser={game.players.find((player) => player?.hand)?.name ?? "unknown"}
         />
       )}
     </Box>

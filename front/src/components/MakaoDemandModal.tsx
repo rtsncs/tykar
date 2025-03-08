@@ -1,13 +1,12 @@
+import { Button, SimpleGrid } from "@chakra-ui/react";
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  SimpleGrid,
-} from "@chakra-ui/react";
+  DialogRoot,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogCloseTrigger,
+} from "./ui/dialog";
 
 function MakaoDemandModal(props: {
   isOpen: boolean;
@@ -26,12 +25,12 @@ function MakaoDemandModal(props: {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Demand</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+    <DialogRoot open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Demand</DialogTitle>
+        </DialogHeader>
+        <DialogBody>
           <SimpleGrid columns={2} gap="8px">
             {type === "suit"
               ? suits.map((suit) => (
@@ -45,9 +44,10 @@ function MakaoDemandModal(props: {
                   </Button>
                 ))}
           </SimpleGrid>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        </DialogBody>
+        <DialogCloseTrigger />
+      </DialogContent>
+    </DialogRoot>
   );
 }
 

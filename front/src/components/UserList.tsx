@@ -4,7 +4,7 @@ function UserList({ users }: { users: string[] }) {
   return (
     <VStack w="100%">
       {users.map((username) => (
-        <Card
+        <Card.Root
           key={username}
           w="100%"
           justifyContent="space-around"
@@ -13,7 +13,7 @@ function UserList({ users }: { users: string[] }) {
           <Heading as="h5" size="sm">
             {username}
           </Heading>
-        </Card>
+        </Card.Root>
       ))}
     </VStack>
   );

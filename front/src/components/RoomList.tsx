@@ -6,8 +6,8 @@ function RoomList({ rooms }: { rooms: string[] }) {
   return (
     <VStack w="100%">
       {rooms.map((room) => (
-        <Link as={ReactRouterLink} to={room} key={room}>
-          {room}
+        <Link asChild key={room}>
+          <ReactRouterLink to={room}>{room}</ReactRouterLink>
         </Link>
       ))}
     </VStack>

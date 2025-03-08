@@ -1,21 +1,23 @@
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormLabel,
+  CheckboxCheckedChangeDetails,
+  Field,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Spinner,
 } from "@chakra-ui/react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useSession } from "../AuthProvider";
+import {
+  DialogRoot,
+  DialogTitle,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogCloseTrigger,
+} from "./ui/dialog";
+import { Checkbox } from "./ui/checkbox";
 
 function Login(props: { isOpen: boolean; onClose: () => void }) {
   const { isOpen, onClose } = props;
@@ -29,8 +31,8 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
     setPassword(e.target.value);
 
   const [remember_me, setRememberMe] = useState(false);
-  const handleRememberMeChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setRememberMe(e.target.checked);
+  const handleRememberMeChange = (e: CheckboxCheckedChangeDetails) =>
+    setRememberMe(!!e.checked);
 
   const [requestSend, setRequestSend] = useState(false);
   const [error, setError] = useState("");
@@ -57,13 +59,13 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Login</ModalHeader>
-        <ModalCloseButton />
+    <DialogRoot open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Login</DialogTitle>
+        </DialogHeader>
         <form onSubmit={onLogin}>
-          <ModalBody
+          <DialogBody
             display="flex"
             flexDir="column"
             alignItems="center"
@@ -71,45 +73,46 @@ function Login(props: { isOpen: boolean; onClose: () => void }) {
           >
             {requestSend && <Spinner size="lg" />}
             {error && <Box color="error">{error}</Box>}
-            <FormControl isRequired isInvalid={!email_or_username}>
-              <FormLabel>Email or username</FormLabel>
+            <Field.Root required invalid={!email_or_username}>
+              <Field.Label>Email or username</Field.Label>
               <Input
                 placeholder="Email or username"
                 type="text"
                 value={email_or_username}
                 onChange={handleEmailorNameChange}
               />
-            </FormControl>
-            <FormControl isRequired isInvalid={!password}>
-              <FormLabel>Password</FormLabel>
+            </Field.Root>
+            <Field.Root required invalid={!password}>
+              <Field.Label>Password</Field.Label>
               <Input
                 placeholder="Password"
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
               />
-            </FormControl>
-            <FormControl>
+            </Field.Root>
+            <Field.Root>
               <Checkbox
-                isChecked={remember_me}
-                onChange={handleRememberMeChange}
+                checked={remember_me}
+                onCheckedChange={handleRememberMeChange}
               >
                 Remember me
               </Checkbox>
-            </FormControl>
-          </ModalBody>
+            </Field.Root>
+          </DialogBody>
 
-          <ModalFooter>
+          <DialogFooter>
             <Button variant="ghost" onClick={onClose} mr={3}>
               Cancel
             </Button>
             <Button colorScheme="blue" type="submit">
               Login
             </Button>
-          </ModalFooter>
+          </DialogFooter>
+          <DialogCloseTrigger />
         </form>
-      </ModalContent>
-    </Modal>
+      </DialogContent>
+    </DialogRoot>
   );
 }
 

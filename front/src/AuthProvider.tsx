@@ -41,8 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getSession = async () => {
     const { data } = await client.GET("/api/users/current");
-    if (data && (data as CurrentUser).id) {
-      setSession(data as CurrentUser);
+    if (data) {
+      setSession(data);
     }
   };
 

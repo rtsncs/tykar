@@ -3,8 +3,8 @@ import { Link as ReactRouterLink } from "react-router-dom";
 
 function Index() {
   return (
-    <Link as={ReactRouterLink} to="makao">
-      Makao
+    <Link asChild>
+      <ReactRouterLink to="makao">Makao</ReactRouterLink>
     </Link>
   );
 }

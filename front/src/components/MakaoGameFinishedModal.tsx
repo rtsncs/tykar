@@ -13,7 +13,7 @@ function MakaoGameFinishedModal({ loser }: { loser: string }) {
     >
       <Box
         bg="red"
-        textColor="white"
+        color="white"
         m="auto"
         py="1em"
         w="75%"
