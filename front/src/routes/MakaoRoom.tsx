@@ -93,7 +93,7 @@ function MakaoRoom() {
     channelRef.current.on("game", (game: MakaoGame) => setGame(game));
 
     channelRef.current.join().receive("error", () => {
-      navigate("..", { relative: "path" });
+      void navigate("..", { relative: "path" });
     });
 
     return () => {
