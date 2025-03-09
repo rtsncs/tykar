@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
 import "./App.css";
 import Header from "./components/header";
-import { Container } from "@chakra-ui/react";
+import { Container, Spinner } from "@chakra-ui/react";
+import { Suspense } from "react";
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
         centerContent
         mt="4"
       >
-        <Outlet />
+        <Suspense fallback={<Spinner size="xl" />}>
+          <Outlet />
+        </Suspense>
       </Container>
     </>
   );
