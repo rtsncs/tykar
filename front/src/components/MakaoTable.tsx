@@ -13,6 +13,7 @@ import { useSession } from "../AuthProvider";
 import PlayerHand from "./PlayerHand";
 import MakaoDemandModal from "./MakaoDemandModal";
 import MakaoGameFinishedModal from "./MakaoGameFinishedModal";
+import { useTranslation } from "react-i18next";
 
 function MakaoTable({
   game,
@@ -31,6 +32,7 @@ function MakaoTable({
   onPass: () => void;
 }) {
   const { session } = useSession();
+  const { t } = useTranslation();
 
   const { open, onOpen, onClose } = useDisclosure();
 
@@ -58,9 +60,15 @@ function MakaoTable({
           <CardHand cards={game.played.slice(0, 5)} />
         </GridItem>
         <GridItem area="tl" color="white">
-          {game.toDraw > 0 && <Box>To draw: {game.toDraw}</Box>}
-          {game.toBlock > 0 && <Box>To block: {game.toBlock}</Box>}
-          {game.demand && <Box>Demand: {game.demand}</Box>}
+          {game.toDraw > 0 && (
+            <Box>{t("to_draw", { count: game.toDraw })} </Box>
+          )}
+          {game.toBlock > 0 && (
+            <Box>{t("to_draw", { count: game.toDraw })} </Box>
+          )}
+          {game.demand && (
+            <Box>{t("current_demand", { demand: game.demand })}</Box>
+          )}
         </GridItem>
         <GridItem area="hand0">
           <PlayerHand
@@ -101,7 +109,7 @@ function MakaoTable({
                   (game.turn !== game.lastTurn && game.toBlock === 0 && false)
                 }
               >
-                Pass
+                {t("pass")}
               </Button>
               <Button
                 onClick={onDrawCard}
@@ -109,7 +117,7 @@ function MakaoTable({
                   game.turn !== mySeat || (game.turn === game.lastTurn && false)
                 }
               >
-                Draw
+                {t("draw_card")}
               </Button>
               <Button
                 onClick={onOpen}
@@ -117,7 +125,7 @@ function MakaoTable({
                   game.turn !== mySeat || (game.turn === game.lastTurn && false)
                 }
               >
-                Demand
+                {t("make_demand")}
               </Button>
             </ButtonGroup>
           </GridItem>

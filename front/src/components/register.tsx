@@ -22,6 +22,7 @@ import {
 } from "./ui/dialog";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { PasswordInput } from "./ui/password-input";
+import { useTranslation } from "react-i18next";
 
 type RegisterRequest = components["schemas"]["RegisterRequest"];
 //type RegisterError = components["schemas"]["RegisterError"];
@@ -41,6 +42,7 @@ function Register() {
   const [responseError, setResponseError] = useState("");
 
   const client = useApi();
+  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (loading) return;
@@ -58,7 +60,7 @@ function Register() {
       reset();
     } else {
       //TODO
-      setResponseError("Something went wrong");
+      setResponseError(t("generic_error"));
     }
     setLoading(false);
   };
@@ -73,7 +75,7 @@ function Register() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Register</Button>
+        <Button>{t("register")}</Button>
       </DialogTrigger>
       <DialogContent>
         {loading && (
@@ -83,7 +85,7 @@ function Register() {
         )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Register</DialogTitle>
+            <DialogTitle>{t("register")}</DialogTitle>
           </DialogHeader>
           <DialogBody
             display="flex"
@@ -94,17 +96,17 @@ function Register() {
             <Fieldset.Root invalid={!!responseError} disabled={loading}>
               <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
               <Field.Root invalid={!!errors.username}>
-                <Field.Label>Username</Field.Label>
+                <Field.Label>{t("username")}</Field.Label>
                 <Input
                   {...register("username", {
-                    required: "This field is required",
+                    required: t("field_required"),
                     minLength: {
                       value: 3,
-                      message: "Username must be at least 3 characters",
+                      message: t("field_min_len", { count: 3 }),
                     },
                     maxLength: {
                       value: 32,
-                      message: "Username must be at most 32 characters",
+                      message: t("field_max_len", { count: 32 }),
                     },
                   })}
                 />
@@ -113,13 +115,13 @@ function Register() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.email}>
-                <Field.Label>Email</Field.Label>
+                <Field.Label>{t("email")}</Field.Label>
                 <Input
                   {...register("email", {
-                    required: "This field is required",
+                    required: t("field_required"),
                     pattern: {
                       value: /.+@\S+\.\S+$/,
-                      message: "Enter a valid email",
+                      message: t("field_email_invalid"),
                     },
                   })}
                 />
@@ -128,13 +130,13 @@ function Register() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.password}>
-                <Field.Label>Password</Field.Label>
+                <Field.Label>{t("password")}</Field.Label>
                 <PasswordInput
                   {...register("password", {
-                    required: "This field is required",
+                    required: t("field_required"),
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: t("field_min_len", { count: 8 }),
                     },
                   })}
                 />
@@ -143,12 +145,11 @@ function Register() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.repeat_password}>
-                <Field.Label>Repeat new password</Field.Label>
+                <Field.Label>{t("repeat_password")}</Field.Label>
                 <PasswordInput
                   {...register("repeat_password", {
                     validate: (value) => {
-                      if (value !== password)
-                        return "The passwords do not match";
+                      if (value !== password) return t("password_not_matching");
                     },
                   })}
                 />
@@ -164,11 +165,11 @@ function Register() {
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button variant="ghost" disabled={loading}>
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogActionTrigger>
             <Button type="submit" disabled={loading}>
-              Register
+              {t("register")}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger disabled={loading} />

@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import { useSession } from "../AuthProvider";
 import Register from "./register";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
+import { useTranslation } from "react-i18next";
 
 function Header() {
   const { session, logout } = useSession();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -27,10 +29,10 @@ function Header() {
               <MenuTrigger as={Button}>{session.username}</MenuTrigger>
               <MenuContent>
                 <MenuItem value="settings" asChild>
-                  <Link to="settings">Settings</Link>
+                  <Link to="settings">{t("settings")}</Link>
                 </MenuItem>
                 <MenuItem value="logout" onClick={() => void logout()}>
-                  Logout
+                  {t("logout")}
                 </MenuItem>
               </MenuContent>
             </MenuRoot>

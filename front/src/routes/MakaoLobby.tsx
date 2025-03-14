@@ -4,10 +4,12 @@ import { Button } from "@chakra-ui/react";
 import { useSocket } from "../SocketProvider";
 import { useNavigate } from "react-router-dom";
 import RoomList from "../components/RoomList";
+import { useTranslation } from "react-i18next";
 
 function Makao() {
   const socket = useSocket();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const channelRef = useRef<Channel | null>(null);
   const presenceRef = useRef<Presence | null>(null);
@@ -45,7 +47,7 @@ function Makao() {
 
   return (
     <>
-      <Button onClick={onNewRoom}>New room</Button>
+      <Button onClick={onNewRoom}>{t("new_room")}</Button>
       <RoomList rooms={rooms} />
     </>
   );

@@ -21,6 +21,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useApi } from "../../api/ApiProvider";
 import { useState } from "react";
 import { toaster } from "../ui/toaster";
+import { useTranslation } from "react-i18next";
 
 interface Inputs {
   current_password: string;
@@ -42,6 +43,7 @@ function ChangePassword() {
   const [responseError, setResponseError] = useState("");
 
   const client = useApi();
+  const { t } = useTranslation();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (loading) return;
     setResponseError("");
@@ -53,11 +55,12 @@ function ChangePassword() {
       },
     });
     if (error) {
-      if (error.errors.current_password) setResponseError("Invalid password");
-      else setResponseError("Something went wrong");
+      if (error.errors.current_password)
+        setResponseError(t("invalid_password"));
+      else setResponseError(t("generic_error"));
     } else {
       toaster.create({
-        description: "Password changed successfully",
+        description: t("password_change_success"),
         type: "success",
       });
       setOpen(false);
@@ -77,7 +80,7 @@ function ChangePassword() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Change password</Button>
+        <Button>{t("change_password")}</Button>
       </DialogTrigger>
       <DialogContent>
         {loading && (
@@ -87,16 +90,20 @@ function ChangePassword() {
         )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Change password</DialogTitle>
+            <DialogTitle>{t("change_password")}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Fieldset.Root invalid={!!responseError} disabled={loading}>
               <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
               <Field.Root invalid={!!errors.new_password}>
-                <Field.Label>New password</Field.Label>
+                <Field.Label>{t("new_password")}</Field.Label>
                 <PasswordInput
                   {...register("new_password", {
-                    required: "This field is required",
+                    required: t("field_required"),
+                    minLength: {
+                      value: 8,
+                      message: t("field_min_len", { count: 8 }),
+                    },
                   })}
                 />
                 {errors.new_password && (
@@ -106,12 +113,11 @@ function ChangePassword() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.repeat_password}>
-                <Field.Label>Repeat new password</Field.Label>
+                <Field.Label>{t("repeat_new_password")}</Field.Label>
                 <PasswordInput
                   {...register("repeat_password", {
                     validate: (value) => {
-                      if (value !== password)
-                        return "The passwords do not match";
+                      if (value !== password) return t("password_not_matching");
                     },
                   })}
                 />
@@ -122,10 +128,10 @@ function ChangePassword() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.current_password}>
-                <Field.Label>Current password</Field.Label>
+                <Field.Label>{t("current_password")}</Field.Label>
                 <PasswordInput
                   {...register("current_password", {
-                    required: "This field is required",
+                    required: t("field_required"),
                   })}
                 />
                 {errors.current_password && (
@@ -140,11 +146,11 @@ function ChangePassword() {
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button variant="ghost" disabled={loading}>
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogActionTrigger>
             <Button type="submit" disabled={loading}>
-              Save
+              {t("save")}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger disabled={loading} />

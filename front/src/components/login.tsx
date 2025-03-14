@@ -22,6 +22,7 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { PasswordInput } from "./ui/password-input";
+import { useTranslation } from "react-i18next";
 
 function Login() {
   const {
@@ -36,6 +37,7 @@ function Login() {
   const [responseError, setResponseError] = useState("");
 
   const { login } = useSession();
+  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     if (loading) return;
@@ -45,7 +47,7 @@ function Login() {
       setOpen(false);
       reset();
     } else {
-      setResponseError("Invalid credentials");
+      setResponseError(t("invalid_credentials"));
     }
     setLoading(false);
   };
@@ -59,7 +61,7 @@ function Login() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Login</Button>
+        <Button>{t("login")}</Button>
       </DialogTrigger>
       <DialogContent>
         {loading && (
@@ -69,7 +71,7 @@ function Login() {
         )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Login</DialogTitle>
+            <DialogTitle>{t("login")}</DialogTitle>
           </DialogHeader>
           <DialogBody
             display="flex"
@@ -80,11 +82,11 @@ function Login() {
             <Fieldset.Root invalid={!!responseError} disabled={loading}>
               <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
               <Field.Root invalid={!!errors.email_or_username}>
-                <Field.Label>Email or username</Field.Label>
+                <Field.Label>{t("email_or_username")}</Field.Label>
                 <Input
                   type="text"
                   {...register("email_or_username", {
-                    required: "This field is required",
+                    required: t("field_required"),
                   })}
                 />
                 {errors.email_or_username && (
@@ -94,10 +96,10 @@ function Login() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.password}>
-                <Field.Label>Password</Field.Label>
+                <Field.Label>{t("password")}</Field.Label>
                 <PasswordInput
                   {...register("password", {
-                    required: "This field is required",
+                    required: t("field_required"),
                   })}
                 />
                 {errors.password && (
@@ -105,7 +107,7 @@ function Login() {
                 )}
               </Field.Root>
               <Field.Root>
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox>{t("remember_me")}</Checkbox>
               </Field.Root>
             </Fieldset.Root>
           </DialogBody>
@@ -113,11 +115,11 @@ function Login() {
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button variant="ghost" disabled={loading}>
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogActionTrigger>
             <Button type="submit" disabled={loading}>
-              Login
+              {t("login")}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger disabled={loading} />

@@ -22,6 +22,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useApi } from "../../api/ApiProvider";
 import { useState } from "react";
 import { toaster } from "../ui/toaster";
+import { useTranslation } from "react-i18next";
 
 interface Inputs {
   email: string;
@@ -41,6 +42,7 @@ function ChangeEmail() {
   const [responseError, setResponseError] = useState("");
 
   const client = useApi();
+  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (loading) return;
@@ -50,12 +52,12 @@ function ChangeEmail() {
       body: data,
     });
     if (error) {
-      if (error.errors.current_password) setResponseError("Invalid password");
-      else setResponseError("Something went wrong");
+      if (error.errors.current_password)
+        setResponseError(t("invalid_password"));
+      else setResponseError(t("generic_error"));
     } else {
       toaster.create({
-        description:
-          "A link to confirm your email change has been sent to the new address",
+        description: t("email_change_sent"),
         type: "success",
       });
       setOpen(false);
@@ -74,7 +76,7 @@ function ChangeEmail() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Change email</Button>
+        <Button>{t("change_email")}</Button>
       </DialogTrigger>
       <DialogContent>
         {loading && (
@@ -84,19 +86,19 @@ function ChangeEmail() {
         )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Change email</DialogTitle>
+            <DialogTitle>{t("change_email")}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Fieldset.Root invalid={!!responseError} disabled={loading}>
               <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
               <Field.Root invalid={!!errors.email}>
-                <Field.Label>Email</Field.Label>
+                <Field.Label>{t("email")}</Field.Label>
                 <Input
                   {...register("email", {
-                    required: "This field is required",
+                    required: t("field_required"),
                     pattern: {
                       value: /.+@\S+\.\S+$/,
-                      message: "Enter a valid email",
+                      message: t("field_email_invalid"),
                     },
                   })}
                 />
@@ -105,10 +107,10 @@ function ChangeEmail() {
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.current_password}>
-                <Field.Label>Password</Field.Label>
+                <Field.Label>{t("password")}</Field.Label>
                 <PasswordInput
                   {...register("current_password", {
-                    required: "This field is required",
+                    required: t("field_required"),
                   })}
                 />
                 {errors.current_password && (
@@ -123,11 +125,11 @@ function ChangeEmail() {
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button variant="ghost" disabled={loading}>
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogActionTrigger>
             <Button type="submit" disabled={loading}>
-              Save
+              {t("save")}
             </Button>
           </DialogFooter>
           <DialogCloseTrigger disabled={loading} />

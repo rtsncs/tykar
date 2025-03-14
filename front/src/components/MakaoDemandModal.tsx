@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogCloseTrigger,
 } from "./ui/dialog";
+import { useTranslation } from "react-i18next";
 
 function MakaoDemandModal(props: {
   isOpen: boolean;
@@ -15,6 +16,8 @@ function MakaoDemandModal(props: {
   onSelect: (demand: string) => void;
 }) {
   const { isOpen, type, onClose, onSelect } = props;
+
+  const { t } = useTranslation();
 
   const ranks = ["4", "5", "6", "7", "8", "9", "10", "Q"];
   const suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
@@ -28,7 +31,7 @@ function MakaoDemandModal(props: {
     <DialogRoot open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Demand</DialogTitle>
+          <DialogTitle>{t("make_demand")}</DialogTitle>
         </DialogHeader>
         <DialogBody>
           <SimpleGrid columns={2} gap="8px">
