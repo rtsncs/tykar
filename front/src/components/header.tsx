@@ -1,11 +1,4 @@
-import {
-  Button,
-  chakra,
-  Flex,
-  Heading,
-  Spacer,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, chakra, Flex, Heading, Spacer } from "@chakra-ui/react";
 import Login from "./login";
 import { Link } from "react-router-dom";
 import { useSession } from "../AuthProvider";
@@ -13,18 +6,6 @@ import Register from "./register";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 
 function Header() {
-  const {
-    open: isLoginOpen,
-    onOpen: onLoginOpen,
-    onClose: onLoginClose,
-  } = useDisclosure();
-
-  const {
-    open: isRegisterOpen,
-    onOpen: onRegisterOpen,
-    onClose: onRegisterClose,
-  } = useDisclosure();
-
   const { session, logout } = useSession();
 
   return (
@@ -32,12 +13,14 @@ function Header() {
       <chakra.header borderBottom="thin solid gray" boxShadow="md">
         <Flex
           w={{ base: "98vw", "2xl": "8xl" }}
-          py={8}
+          p={4}
           gap={2}
           alignItems="center"
           mx="auto"
         >
-          <Heading>Tykar</Heading>
+          <Heading size="3xl" asChild>
+            <Link to="/">Tykar</Link>
+          </Heading>
           <Spacer />
           {session ? (
             <MenuRoot>
@@ -53,13 +36,11 @@ function Header() {
             </MenuRoot>
           ) : (
             <>
-              <Button onClick={onLoginOpen}>Login</Button>
-              <Button onClick={onRegisterOpen}>Register</Button>
+              <Login />
+              <Register />
             </>
           )}
         </Flex>
-        <Login isOpen={isLoginOpen} onClose={onLoginClose} />
-        <Register isOpen={isRegisterOpen} onClose={onRegisterClose} />
       </chakra.header>
     </>
   );

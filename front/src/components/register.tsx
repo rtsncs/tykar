@@ -1,5 +1,12 @@
-import { Button, Input, Spinner, Field } from "@chakra-ui/react";
-import { FormEvent, SetStateAction, useState } from "react";
+import {
+  Button,
+  Input,
+  Spinner,
+  Field,
+  AbsoluteCenter,
+  Fieldset,
+} from "@chakra-ui/react";
+import { useState } from "react";
 import { useApi } from "../api/ApiProvider";
 import type { components } from "../api/api";
 import {
@@ -9,132 +16,162 @@ import {
   DialogFooter,
   DialogHeader,
   DialogCloseTrigger,
+  DialogTitle,
+  DialogActionTrigger,
+  DialogTrigger,
 } from "./ui/dialog";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { PasswordInput } from "./ui/password-input";
 
-type RegisterError = components["schemas"]["RegisterError"];
+type RegisterRequest = components["schemas"]["RegisterRequest"];
+//type RegisterError = components["schemas"]["RegisterError"];
+type Inputs = RegisterRequest & { repeat_password: string };
 
-function Register(props: { isOpen: boolean; onClose: () => void }) {
-  const { isOpen, onClose } = props;
+function Register() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
 
-  const [username, setName] = useState("");
-  const handleNameChange = (e: { target: { value: SetStateAction<string> } }) =>
-    setName(e.target.value);
-
-  const [email, setEmail] = useState("");
-  const handleEmailChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => setEmail(e.target.value);
-
-  const [password, setPassword] = useState("");
-  const handlePasswordChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => setPassword(e.target.value);
-
-  const [passwordRepeat, setPasswordRepeat] = useState("");
-  const handlePasswordRepeatChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => setPasswordRepeat(e.target.value);
-
-  const [requestSend, setRequestSend] = useState(false);
-  const [errors, setErrors] = useState<RegisterError | null>(null);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [responseError, setResponseError] = useState("");
 
   const client = useApi();
 
-  function onRegister(e: FormEvent) {
-    e.preventDefault();
-    if (requestSend || password !== passwordRepeat) return;
-    setRequestSend(true);
-    setErrors(null);
-    const register = async () => {
-      const { error } = await client.POST("/api/users/register", {
-        body: { username, email, password },
-      });
-      if (!error) {
-        onClose();
-      } else {
-        console.log(error);
-        setErrors(error);
-      }
-      setRequestSend(false);
-    };
-
-    void register();
-  }
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (loading) return;
+    setResponseError("");
+    setLoading(true);
+    const { error } = await client.POST("/api/users/register", {
+      body: {
+        email: data.email,
+        username: data.username,
+        password: data.password,
+      },
+    });
+    if (!error) {
+      setOpen(false);
+      reset();
+    } else {
+      //TODO
+      setResponseError("Something went wrong");
+    }
+    setLoading(false);
+  };
+  const password = watch("password", "");
 
   return (
-    <DialogRoot open={isOpen} onOpenChange={onClose}>
+    <DialogRoot
+      lazyMount
+      open={open}
+      onOpenChange={(e) => {
+        if (!loading) setOpen(e.open);
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button>Register</Button>
+      </DialogTrigger>
       <DialogContent>
-        <DialogHeader>Register</DialogHeader>
-        <form onSubmit={onRegister}>
+        {loading && (
+          <AbsoluteCenter height="full" width="full" bg="bg/80" zIndex="max">
+            <Spinner size="lg" />
+          </AbsoluteCenter>
+        )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Register</DialogTitle>
+          </DialogHeader>
           <DialogBody
             display="flex"
             flexDir="column"
             alignItems="center"
             gap={4}
           >
-            {requestSend && <Spinner size="lg" />}
-            <Field.Root
-              required
-              invalid={!username || errors?.errors.username != null}
-            >
-              <Field.Label>Username</Field.Label>
-              <Input
-                placeholder="Username"
-                type="text"
-                value={username}
-                minLength={3}
-                maxLength={32}
-                onChange={handleNameChange}
-              />
-              <Field.ErrorText>{errors?.errors.username}</Field.ErrorText>
-            </Field.Root>
-            <Field.Root
-              required
-              invalid={!email || errors?.errors.email != null}
-            >
-              <Field.Label>Email</Field.Label>
-              <Input
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-              />
-              <Field.ErrorText>{errors?.errors.email}</Field.ErrorText>
-            </Field.Root>
-            <Field.Root
-              required
-              invalid={password.length < 8 || errors?.errors.password != null}
-            >
-              <Field.Label>Password</Field.Label>
-              <Input
-                placeholder="Password"
-                type="password"
-                value={password}
-                minLength={8}
-                onChange={handlePasswordChange}
-              />
-              <Field.ErrorText>{errors?.errors.password}</Field.ErrorText>
-            </Field.Root>
-            <Field.Root required invalid={passwordRepeat !== password}>
-              <Field.Label>Repeat password</Field.Label>
-              <Input
-                placeholder="Repeat password"
-                type="password"
-                value={passwordRepeat}
-                onChange={handlePasswordRepeatChange}
-              />
-            </Field.Root>
+            <Fieldset.Root invalid={!!responseError} disabled={loading}>
+              <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
+              <Field.Root invalid={!!errors.username}>
+                <Field.Label>Username</Field.Label>
+                <Input
+                  {...register("username", {
+                    required: "This field is required",
+                    minLength: {
+                      value: 3,
+                      message: "Username must be at least 3 characters",
+                    },
+                    maxLength: {
+                      value: 32,
+                      message: "Username must be at most 32 characters",
+                    },
+                  })}
+                />
+                {errors.username && (
+                  <Field.ErrorText>{errors.username.message}</Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root invalid={!!errors.email}>
+                <Field.Label>Email</Field.Label>
+                <Input
+                  {...register("email", {
+                    required: "This field is required",
+                    pattern: {
+                      value: /.+@\S+\.\S+$/,
+                      message: "Enter a valid email",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <Field.ErrorText>{errors.email.message}</Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root invalid={!!errors.password}>
+                <Field.Label>Password</Field.Label>
+                <PasswordInput
+                  {...register("password", {
+                    required: "This field is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
+                  })}
+                />
+                {errors.password && (
+                  <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root invalid={!!errors.repeat_password}>
+                <Field.Label>Repeat new password</Field.Label>
+                <PasswordInput
+                  {...register("repeat_password", {
+                    validate: (value) => {
+                      if (value !== password)
+                        return "The passwords do not match";
+                    },
+                  })}
+                />
+                {errors.repeat_password && (
+                  <Field.ErrorText>
+                    {errors.repeat_password.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
+            </Fieldset.Root>
           </DialogBody>
 
           <DialogFooter>
-            <Button variant="ghost" onClick={onClose} mr={3}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" type="submit">
+            <DialogActionTrigger asChild>
+              <Button variant="ghost" disabled={loading}>
+                Cancel
+              </Button>
+            </DialogActionTrigger>
+            <Button type="submit" disabled={loading}>
               Register
             </Button>
           </DialogFooter>
-          <DialogCloseTrigger />
+          <DialogCloseTrigger disabled={loading} />
         </form>
       </DialogContent>
     </DialogRoot>

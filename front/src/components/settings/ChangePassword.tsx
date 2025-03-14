@@ -49,7 +49,7 @@ function ChangePassword() {
     const { error } = await client.PATCH("/api/users/settings/password", {
       body: {
         current_password: data.current_password,
-        new_password: data.new_password,
+        password: data.new_password,
       },
     });
     if (error) {

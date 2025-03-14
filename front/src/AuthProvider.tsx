@@ -8,7 +8,7 @@ import {
 import { useApi } from "./api/ApiProvider";
 import type { components } from "./api/api";
 
-type LoginRequest = components["schemas"]["LoginRequest"];
+export type LoginRequest = components["schemas"]["LoginRequest"];
 type CurrentUser = components["schemas"]["CurrentUserResponse"];
 
 interface Auth {

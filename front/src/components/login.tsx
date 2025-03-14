@@ -1,13 +1,13 @@
 import {
-  Box,
+  AbsoluteCenter,
   Button,
-  CheckboxCheckedChangeDetails,
   Field,
+  Fieldset,
   Input,
   Spinner,
 } from "@chakra-ui/react";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useSession } from "../AuthProvider";
+import { useState } from "react";
+import { LoginRequest, useSession } from "../AuthProvider";
 import {
   DialogRoot,
   DialogTitle,
@@ -16,100 +16,111 @@ import {
   DialogFooter,
   DialogHeader,
   DialogCloseTrigger,
+  DialogTrigger,
+  DialogActionTrigger,
 } from "./ui/dialog";
 import { Checkbox } from "./ui/checkbox";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { PasswordInput } from "./ui/password-input";
 
-function Login(props: { isOpen: boolean; onClose: () => void }) {
-  const { isOpen, onClose } = props;
+function Login() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LoginRequest>();
 
-  const [email_or_username, setEmailOrName] = useState("");
-  const handleEmailorNameChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmailOrName(e.target.value);
-
-  const [password, setPassword] = useState("");
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setPassword(e.target.value);
-
-  const [remember_me, setRememberMe] = useState(false);
-  const handleRememberMeChange = (e: CheckboxCheckedChangeDetails) =>
-    setRememberMe(!!e.checked);
-
-  const [requestSend, setRequestSend] = useState(false);
-  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [responseError, setResponseError] = useState("");
 
   const { login } = useSession();
 
-  function onLogin(e: FormEvent) {
-    e.preventDefault();
-    if (requestSend) return;
-    setRequestSend(true);
-    setError("");
-    void login({ email_or_username, password, remember_me }).then((success) => {
-      if (success) {
-        onClose();
-      } else {
-        setError("Invalid credentials.");
-      }
-      setRequestSend(false);
-    });
-    //if (e instanceof ResponseError && e.response.status === 401) {
-    //} else {
-    //  setError("Something went wrong.");
-    //}
-  }
+  const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
+    if (loading) return;
+    setResponseError("");
+    setLoading(true);
+    if (await login(data)) {
+      setOpen(false);
+      reset();
+    } else {
+      setResponseError("Invalid credentials");
+    }
+    setLoading(false);
+  };
 
   return (
-    <DialogRoot open={isOpen} onOpenChange={onClose}>
+    <DialogRoot
+      lazyMount
+      open={open}
+      onOpenChange={(e) => {
+        if (!loading) setOpen(e.open);
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button>Login</Button>
+      </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Login</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={onLogin}>
+        {loading && (
+          <AbsoluteCenter height="full" width="full" bg="bg/80" zIndex="max">
+            <Spinner size="lg" />
+          </AbsoluteCenter>
+        )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Login</DialogTitle>
+          </DialogHeader>
           <DialogBody
             display="flex"
             flexDir="column"
             alignItems="center"
             gap={4}
           >
-            {requestSend && <Spinner size="lg" />}
-            {error && <Box color="error">{error}</Box>}
-            <Field.Root required invalid={!email_or_username}>
-              <Field.Label>Email or username</Field.Label>
-              <Input
-                placeholder="Email or username"
-                type="text"
-                value={email_or_username}
-                onChange={handleEmailorNameChange}
-              />
-            </Field.Root>
-            <Field.Root required invalid={!password}>
-              <Field.Label>Password</Field.Label>
-              <Input
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-            </Field.Root>
-            <Field.Root>
-              <Checkbox
-                checked={remember_me}
-                onCheckedChange={handleRememberMeChange}
-              >
-                Remember me
-              </Checkbox>
-            </Field.Root>
+            <Fieldset.Root invalid={!!responseError} disabled={loading}>
+              <Fieldset.ErrorText>{responseError}</Fieldset.ErrorText>
+              <Field.Root invalid={!!errors.email_or_username}>
+                <Field.Label>Email or username</Field.Label>
+                <Input
+                  type="text"
+                  {...register("email_or_username", {
+                    required: "This field is required",
+                  })}
+                />
+                {errors.email_or_username && (
+                  <Field.ErrorText>
+                    {errors.email_or_username.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root invalid={!!errors.password}>
+                <Field.Label>Password</Field.Label>
+                <PasswordInput
+                  {...register("password", {
+                    required: "This field is required",
+                  })}
+                />
+                {errors.password && (
+                  <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root>
+                <Checkbox>Remember me</Checkbox>
+              </Field.Root>
+            </Fieldset.Root>
           </DialogBody>
 
           <DialogFooter>
-            <Button variant="ghost" onClick={onClose} mr={3}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" type="submit">
+            <DialogActionTrigger asChild>
+              <Button variant="ghost" disabled={loading}>
+                Cancel
+              </Button>
+            </DialogActionTrigger>
+            <Button type="submit" disabled={loading}>
               Login
             </Button>
           </DialogFooter>
-          <DialogCloseTrigger />
+          <DialogCloseTrigger disabled={loading} />
         </form>
       </DialogContent>
     </DialogRoot>
