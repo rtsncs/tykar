@@ -37,6 +37,10 @@ defmodule TykarWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
   end
 
+  scope "/api", TykarWeb do
+    pipe_through [:api, :require_authenticated_user]
+  end
+
   scope "/api" do
     pipe_through :api
     get "/openapi", OpenApiSpex.Plug.RenderSpec, :show
@@ -47,6 +51,12 @@ defmodule TykarWeb.Router do
     post "/users/register", UserRegistrationController, :create
     post "/users/log_in", UserSessionController, :create
     post "/users/reset_password", UserResetPasswordController, :create
+  end
+
+  scope "/api", TykarWeb do
+    pipe_through [:api_forms, :require_authenticated_user]
+    patch "/users/settings/email", UserSettingsController, :update_email
+    patch "/users/settings/password", UserSettingsController, :update_password
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

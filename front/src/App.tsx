@@ -8,12 +8,7 @@ function App() {
   return (
     <>
       <Header />
-      <Container
-        w={{ base: "100vw", "2xl": "8xl" }}
-        maxW="unset"
-        centerContent
-        mt="4"
-      >
+      <Container w={{ base: "100vw", "2xl": "8xl" }} maxW="unset" mt="4">
         <Suspense fallback={<Spinner size="xl" />}>
           <Outlet />
         </Suspense>

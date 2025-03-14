@@ -120,7 +120,6 @@ defmodule TykarWeb.UserAuth do
       conn
     else
       conn
-      # |> put_flash(:error, "You must log in to access this page.")
       |> send_resp(:unauthorized, "")
       |> halt()
     end

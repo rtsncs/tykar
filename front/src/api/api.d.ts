@@ -68,6 +68,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/settings/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["TykarWeb.UserSettingsController.update_email"];
+        trace?: never;
+    };
+    "/api/users/settings/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["TykarWeb.UserSettingsController.update_password"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -98,6 +130,30 @@ export interface components {
             email: string;
             password: string;
             username: string;
+        };
+        /** UpdateEmailError */
+        UpdateEmailError: {
+            errors: {
+                current_password?: string[];
+                email?: string[];
+            };
+        };
+        /** UpdateEmailRequest */
+        UpdateEmailRequest: {
+            current_password: string;
+            email: string;
+        };
+        /** UpdatePasswordError */
+        UpdatePasswordError: {
+            errors: {
+                current_password?: string[];
+                password?: string[];
+            };
+        };
+        /** UpdatePasswordRequest */
+        UpdatePasswordRequest: {
+            current_password: string;
+            password: string;
         };
     };
     responses: never;
@@ -200,6 +256,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RegisterError"];
+                };
+            };
+        };
+    };
+    "TykarWeb.UserSettingsController.update_email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Email update */
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["UpdateEmailRequest"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateEmailError"];
+                };
+            };
+        };
+    };
+    "TykarWeb.UserSettingsController.update_password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Password update */
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["UpdatePasswordRequest"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdatePasswordError"];
                 };
             };
         };

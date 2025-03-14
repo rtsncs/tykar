@@ -23,9 +23,7 @@ defmodule TykarWeb.UserSessionController do
       |> UserAuth.log_in_user(user, user_params)
     else
       conn
-      |> put_status(:unauthorized)
-      |> put_view(json: TykarWeb.ErrorJSON)
-      |> render(:"401")
+      |> send_resp(:unauthorized, "")
     end
   end
 

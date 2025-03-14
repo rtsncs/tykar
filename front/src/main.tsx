@@ -9,6 +9,7 @@ import { RouterProvider } from "react-router-dom";
 import { SocketProvider } from "./SocketProvider.tsx";
 import { ColorModeProvider } from "./components/ui/color-mode.tsx";
 import router from "./routes.tsx";
+import { Toaster } from "./components/ui/toaster.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
         <ApiProvider>
           <AuthProvider>
             <SocketProvider>
+              <Toaster />
               <RouterProvider router={router} />
             </SocketProvider>
           </AuthProvider>
