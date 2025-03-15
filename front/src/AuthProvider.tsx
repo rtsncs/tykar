@@ -15,6 +15,7 @@ interface Auth {
   session: CurrentUser | null;
   login: (credentials: LoginRequest) => Promise<boolean>;
   logout: () => Promise<void>;
+  getSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<Auth | null>(null);
@@ -51,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, login, logout }}>
+    <AuthContext.Provider value={{ session, login, logout, getSession }}>
       {children}
     </AuthContext.Provider>
   );

@@ -5,7 +5,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
-    "api": "openapi-typescript http://localhost:4000/api/openapi -o ./src/api/api.d.ts",
+    "api": "openapi-typescript http://localhost:4000/dev/openapi -o ./src/api/api.d.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

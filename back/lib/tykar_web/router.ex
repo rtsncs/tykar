@@ -9,13 +9,13 @@ defmodule TykarWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug OpenApiSpex.Plug.PutApiSpec, module: TykarWeb.ApiSpec
   end
 
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
     plug :fetch_current_user
-    plug OpenApiSpex.Plug.PutApiSpec, module: TykarWeb.ApiSpec
   end
 
   pipeline :api_forms do
@@ -25,25 +25,20 @@ defmodule TykarWeb.Router do
     plug :fetch_current_user
   end
 
-  scope "/" do
-    pipe_through :browser
-    get "/", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
-  end
-
-  # Other scopes may use custom stacks.
   scope "/api", TykarWeb do
     pipe_through :api
     get "/users/current", UserSessionController, :show
     delete "/users/log_out", UserSessionController, :delete
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 
   scope "/api", TykarWeb do
     pipe_through [:api, :require_authenticated_user]
+    post "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
   end
 
   scope "/api" do
     pipe_through :api
-    get "/openapi", OpenApiSpex.Plug.RenderSpec, :show
   end
 
   scope "/api", TykarWeb do
@@ -59,13 +54,8 @@ defmodule TykarWeb.Router do
     patch "/users/settings/password", UserSettingsController, :update_password
   end
 
-  # Enable LiveDashboard and Swoosh mailbox preview in development
+  # Enable Swagger, LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:tykar, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
@@ -73,6 +63,8 @@ defmodule TykarWeb.Router do
 
       live_dashboard "/dashboard", metrics: TykarWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+      get "/openapi", OpenApiSpex.Plug.RenderSpec, :show
+      get "/swagger", OpenApiSpex.Plug.SwaggerUI, path: "/dev/openapi"
     end
   end
 
@@ -81,31 +73,9 @@ defmodule TykarWeb.Router do
   scope "/", TykarWeb do
     pipe_through [:browser]
 
-    # get "/users/register", UserRegistrationController, :new
-    # post "/users/register", UserRegistrationController, :create
-    # get "/users/log_in", UserSessionController, :new
-    # post "/users/log_in", UserSessionController, :create
     # get "/users/reset_password", UserResetPasswordController, :new
     # post "/users/reset_password", UserResetPasswordController, :create
     # get "/users/reset_password/:token", UserResetPasswordController, :edit
     # put "/users/reset_password/:token", UserResetPasswordController, :update
   end
-
-  # scope "/", TykarWeb do
-  #   pipe_through [:browser, :require_authenticated_user]
-  #
-  #   get "/users/settings", UserSettingsController, :edit
-  #   put "/users/settings", UserSettingsController, :update
-  #   get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-  # end
-
-  # scope "/", TykarWeb do
-  #   pipe_through [:browser]
-  #
-  #   # delete "/users/log_out", UserSessionController, :delete
-  #   get "/users/confirm", UserConfirmationController, :new
-  #   post "/users/confirm", UserConfirmationController, :create
-  #   get "/users/confirm/:token", UserConfirmationController, :edit
-  #   post "/users/confirm/:token", UserConfirmationController, :update
-  # end
 end

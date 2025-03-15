@@ -21,7 +21,7 @@ defmodule TykarWeb.UserRegistrationController do
     with {:ok, user} <- Accounts.register_user(user_params) do
       Accounts.deliver_user_confirmation_instructions(
         user,
-        &url(~p"/users/confirm/#{&1}")
+        &unverified_url(Application.get_env(:tykar, :front_url), "/confirm/#{&1}")
       )
 
       conn

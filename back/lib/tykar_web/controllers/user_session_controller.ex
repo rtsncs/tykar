@@ -22,8 +22,7 @@ defmodule TykarWeb.UserSessionController do
       conn
       |> UserAuth.log_in_user(user, user_params)
     else
-      conn
-      |> send_resp(:unauthorized, "")
+      {:error, :unauthorized}
     end
   end
 

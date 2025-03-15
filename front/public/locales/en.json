@@ -38,5 +38,9 @@
   "current_demand": "Demand: {{demand}}",
   "to_draw": "To draw: {{count}}",
   "to_block": "To block: {{count}}",
-  "user_lost": "User {{username}} lost"
+  "user_lost": "User {{username}} lost",
+  "user_confirm_success": "User confirmed successfully",
+  "user_confirm_error": "User confirmation link is invalid or it has expired",
+  "email_change_success": "Email changed successfully",
+  "email_change_error": "Email change link is invalid or it has expired"
 }

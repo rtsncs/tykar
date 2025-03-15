@@ -20,6 +20,9 @@ if System.get_env("PHX_SERVER") do
   config :tykar, TykarWeb.Endpoint, server: true
 end
 
+config :tykar,
+  front_url: URI.new!(System.get_env("FRONT_URL") || "http://localhost:5173")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

@@ -15,6 +15,8 @@ defmodule TykarWeb.FallbackController do
 
   def call(conn, {:error, status}) do
     conn
-    |> send_resp(status, "")
+    |> put_status(status)
+    |> put_view(json: TykarWeb.ErrorJSON)
+    |> render(to_string(Plug.Conn.Status.code(status)) |> String.to_atom())
   end
 end

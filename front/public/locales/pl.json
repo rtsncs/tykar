@@ -25,7 +25,7 @@
   "username_taken": "Ta nazwa użytkownika jest już zajęta",
   "email_taken": "Ten e-mail jest już zajęty",
   "invalid_credentials": "Niepoprawne dane logowania",
-  "password_change_success": "Pomyślnie zmieniono hasło",
+  "password_change_success": "Hasło zostało pomyślnie zmienione",
   "email_change_send": "Link potwierdzający został wysłany na nowy adres e-mail",
   "invalid_password": "Nieprawidłowe hasło",
   "new_room": "Stwórz pokój",
@@ -38,5 +38,9 @@
   "current_demand": "Żądanie: {{demand}}",
   "to_draw": "Do wzięcia: {{count}}",
   "to_block": "Do zablokowania: {{count}}",
-  "user_lost": "Użytkownik {{username}} przegrał"
+  "user_lost": "Użytkownik {{username}} przegrał",
+  "user_confirm_success": "Użytkownik został pomyślnie potwierdzony",
+  "user_confirm_error": "Link potwierdzający użytkownika jest nieprawidłowy lub wygasł",
+  "email_change_success": "E-mail został pomyślnie zmieniony",
+  "email_change_error": "Link do zmiany e-maila jest nieprawidłowy lub wygasł"
 }

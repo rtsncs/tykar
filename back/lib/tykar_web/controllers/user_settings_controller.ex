@@ -33,7 +33,10 @@ defmodule TykarWeb.UserSettingsController do
       Accounts.deliver_user_update_email_instructions(
         applied_user,
         user.email,
-        &url(~p"/users/settings/confirm_email/#{&1}")
+        &unverified_url(
+          Application.get_env(:tykar, :front_url),
+          "/settings/confirm_email/#{&1}"
+        )
       )
 
       conn |> send_resp(:no_content, "")
@@ -62,17 +65,20 @@ defmodule TykarWeb.UserSettingsController do
     end
   end
 
+  operation :confirm_email,
+    parameters: [token: [in: :path, type: :string]],
+    responses: [
+      no_content: "",
+      unprocessable_entity: "Invalid or expired token"
+    ]
+
   def confirm_email(conn, %{"token" => token}) do
     case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
-        conn
-        |> put_flash(:info, "Email changed successfully.")
-        |> redirect(to: ~p"/users/settings")
+        conn |> send_resp(:no_content, "")
 
       :error ->
-        conn
-        |> put_flash(:error, "Email change link is invalid or it has expired.")
-        |> redirect(to: ~p"/users/settings")
+        {:error, :unprocessable_entity}
     end
   end
 
