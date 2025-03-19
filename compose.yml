@@ -18,6 +18,8 @@ services:
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       PHX_HOST: ${PHX_HOST}
       FRONT_URL: https://${PHX_HOST}
+      MAILGUN_API_KEY: ${MAILGUN_API_KEY}
+      MAILGUN_DOMAIN: ${PHX_HOST}
     env_file:
       - .env
     depends_on:
