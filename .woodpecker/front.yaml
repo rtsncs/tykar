@@ -20,7 +20,5 @@ steps:
       username: ${CI_REPO_OWNER}
       password:
         from_secret: gh_token
-      cache_from:
-        - *cache_registry:tykar-frontend-layers
-      cache_to:
-        - type=registry,ref=*cache_registry:tykar-frontend-layers,mode=max
+      cache_from: *cache_registry:tykar-frontend-layers
+      cache_to: type=registry,ref=*cache_registry:tykar-frontend-layers,mode=max
