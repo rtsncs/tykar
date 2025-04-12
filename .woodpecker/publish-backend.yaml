@@ -1,5 +1,6 @@
 when:
   event: push
+  path: 'back/**/*'
 
 variables:
   - &file back/Dockerfile
@@ -7,8 +8,6 @@ variables:
 
 steps:
   publish:
-    when:
-      path: 'back/**/*'
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
     settings:
       dockerfile: *file
