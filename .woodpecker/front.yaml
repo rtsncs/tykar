@@ -2,7 +2,7 @@ when:
   event: push
 
 variables:
-  - &file Dockerfile
+  - &file front/Dockerfile
   - &repo github.com/${CI_REPO}
 
 steps:
