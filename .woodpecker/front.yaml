@@ -10,6 +10,7 @@ steps:
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
     settings:
       dockerfile: *file
+      context: front
       repo: *repo
       registry: ghcr.io
       tags: latest
