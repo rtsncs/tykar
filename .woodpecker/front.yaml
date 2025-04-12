@@ -13,6 +13,7 @@ steps:
       repo: *repo
       registry: ghcr.io
       tags: latest
+      platforms: linux/arm64/v8
       username: ${CI_REPO_OWNER}
       password:
         from_secret: gh_token
