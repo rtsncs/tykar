@@ -2,7 +2,7 @@ import { Channel, Presence } from "phoenix";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { useSocket } from "../SocketProvider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import RoomList from "../components/RoomList";
 import { useTranslation } from "react-i18next";
 

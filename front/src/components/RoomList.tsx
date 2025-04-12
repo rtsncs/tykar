@@ -1,6 +1,6 @@
 import { VStack } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router";
 
 function RoomList({ rooms }: { rooms: string[] }) {
   return (

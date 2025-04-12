@@ -1,5 +1,5 @@
 import { Heading, Stack } from "@chakra-ui/react";
-import { ErrorResponse, useRouteError } from "react-router-dom";
+import { ErrorResponse, useRouteError } from "react-router";
 
 export function ErrorPage() {
   const error = useRouteError() as ErrorResponse & Error;

@@ -1,6 +1,6 @@
 import { Button, chakra, Flex, Heading, Spacer } from "@chakra-ui/react";
 import Login from "./login";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useSession } from "../AuthProvider";
 import Register from "./register";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";

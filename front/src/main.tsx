@@ -5,7 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import system from "./theme.ts";
 import { AuthProvider } from "./AuthProvider.tsx";
 import { ApiProvider } from "./api/ApiProvider.tsx";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router/dom";
 import { SocketProvider } from "./SocketProvider.tsx";
 import { ColorModeProvider } from "./components/ui/color-mode.tsx";
 import router from "./routes.tsx";

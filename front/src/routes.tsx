@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 
 const App = lazy(() => import("./App.tsx"));
 const Index = lazy(() => import("./routes/Index.tsx"));

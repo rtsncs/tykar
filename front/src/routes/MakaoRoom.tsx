@@ -1,7 +1,7 @@
 import { Channel, Presence } from "phoenix";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../SocketProvider";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import UserList from "../components/UserList";
 import MakaoTable from "../components/MakaoTable";
 import { Box, Button, HStack } from "@chakra-ui/react";
