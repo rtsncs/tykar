@@ -3,8 +3,8 @@ when:
 
 variables:
   - &file front/Dockerfile
-  - &repo github.com/${CI_REPO}
- 
+  - &repo ghcr.io/${CI_REPO}
+
 steps:
   publish:
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
