@@ -1,6 +1,5 @@
 when:
   event: push
-  path: 'front/**/*'
 
 variables:
   - &front_file front/Dockerfile
@@ -10,6 +9,8 @@ variables:
 
 steps:
   publish-frontend:
+    when:
+      path: 'front/**/*'
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
     settings:
       dockerfile: *front_file
@@ -24,6 +25,8 @@ steps:
         - ghcr.io/${CI_REPO}-front:cache
 
   publish-backend:
+    when:
+      path: 'back/**/*'
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
     settings:
       dockerfile: *back_file
