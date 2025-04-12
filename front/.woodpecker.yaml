@@ -1,0 +1,18 @@
+when:
+  event: push
+
+variables:
+  - &file Dockerfile
+  - &repo github.com/${CI_REPO}
+
+steps:
+  publish:
+    image: docker.io/woodpeckerci/plugin-docker-buildx:latest
+    settings:
+      dockerfile: *file
+      repo: *repo
+      registry: ghcr.io
+      tags: latest
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: gh_token
