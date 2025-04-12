@@ -20,4 +20,4 @@ steps:
       password:
         from_secret: gh_token
       cache_images:
-        - *repo:cache
+        - ghcr.io/${CI_REPO}-front:cache
