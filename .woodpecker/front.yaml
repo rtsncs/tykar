@@ -4,7 +4,7 @@ when:
 variables:
   - &file front/Dockerfile
   - &repo github.com/${CI_REPO}
-
+ 
 steps:
   publish:
     image: docker.io/woodpeckerci/plugin-docker-buildx:latest
