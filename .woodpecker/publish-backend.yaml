@@ -1,0 +1,22 @@
+when:
+  event: push
+  path: 'back/**/*'
+
+variables:
+  - &file back/Dockerfile
+  - &repo ghcr.io/${CI_REPO}-back
+
+steps:
+  publish:
+    image: docker.io/woodpeckerci/plugin-docker-buildx:latest
+    settings:
+      dockerfile: *file
+      context: back
+      repo: *repo
+      registry: ghcr.io
+      tags: latest
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: gh_token
+      cache_images:
+        - ghcr.io/${CI_REPO}-back:cache
