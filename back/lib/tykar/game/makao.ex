@@ -1,7 +1,7 @@
-defmodule Tykar.Games.Makao do
-  alias Tykar.Games.Makao
-  alias Tykar.Games.Makao.Player
-  alias Tykar.Games.Card
+defmodule Tykar.Game.Makao do
+  alias Tykar.Game.Makao
+  alias Tykar.Game.Makao.Player
+  alias Tykar.Game.Card
 
   @derive {Jason.Encoder, except: [:stock]}
   defstruct [
@@ -10,7 +10,7 @@ defmodule Tykar.Games.Makao do
     status: "setup",
     turn: -1,
     lastTurn: -1,
-    stock: Tykar.Games.deck(),
+    stock: Card.deck(),
     played: [],
     toDraw: 0,
     toBlock: 0,

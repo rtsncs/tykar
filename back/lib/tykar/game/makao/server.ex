@@ -1,8 +1,8 @@
-defmodule Tykar.Games.Makao.Server do
+defmodule Tykar.Game.Makao.Server do
   use GenServer, restart: :transient
 
-  alias Tykar.Games.Makao
-  alias Tykar.Games.Card
+  alias Tykar.Game.Makao
+  alias Tykar.Game.Card
 
   def start_link(roomId) when is_binary(roomId) do
     GenServer.start_link(__MODULE__, roomId, name: {:via, Registry, {Tykar.GameRegistry, roomId}})

@@ -45,7 +45,7 @@ defmodule TykarWeb.Router do
     pipe_through :api_forms
     post "/users/register", UserRegistrationController, :create
     post "/users/log_in", UserSessionController, :create
-    post "/users/reset_password", UserResetPasswordController, :create
+    # post "/users/reset_password", UserResetPasswordController, :create
   end
 
   scope "/api", TykarWeb do

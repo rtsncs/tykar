@@ -1,4 +1,4 @@
-defmodule Tykar.Games.Makao.Player do
+defmodule Tykar.Game.Makao.Player do
   @derive Jason.Encoder
   defstruct [
     :name,

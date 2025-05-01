@@ -2,8 +2,8 @@ defmodule TykarWeb.MakaoChannel do
   use TykarWeb, :channel
 
   alias TykarWeb.Presence
-  alias Tykar.Games.Card
-  alias Tykar.Games.Makao
+  alias Tykar.Game.Card
+  alias Tykar.Game.Makao
 
   intercept ["game"]
 

@@ -1,55 +1,48 @@
-defmodule Tykar.Games.DicePoker do
-  alias Tykar.Games.DicePoker
-  alias Tykar.Games.Seat
+defmodule Tykar.Game.DicePoker do
+  use Tykar.Game
+
+  alias Tykar.Game.DicePoker
+  alias Tykar.Game.Seat
 
   @derive Jason.Encoder
   defstruct [
-    :roomId,
+    :room_id,
     players: List.duplicate(%Seat{}, 2),
-    status: "setup",
+    status: :setup,
     turn: -1,
     roll: 0,
+    starting_player: -1,
     thrown: List.duplicate(List.duplicate(0, 5), 2),
     keep: List.duplicate(false, 5)
   ]
 
+  @impl Tykar.Game
   def start(%DicePoker{} = game) do
-    if Enum.all?(game.players, & &1.ready) and game.status != "in_progress" do
-      new_game =
-        %DicePoker{
-          roomId: game.roomId,
-          players: game.players,
-          status: "in_progress",
-          turn: 0
-        }
+    starting_player = 0..1 |> Enum.random()
 
-      {:ok, new_game}
-    else
-      :err
-    end
-  end
+    new_game =
+      %DicePoker{
+        room_id: game.room_id,
+        players: game.players,
+        status: :in_progress,
+        starting_player: starting_player,
+        turn: starting_player
+      }
 
-  def take_seat(%DicePoker{status: "in_progress"}, _seat, _username) do
-    :err
-  end
-
-  def take_seat(%DicePoker{} = game, seat, username) do
-    with {:ok, new_player} <- Seat.seat(Enum.at(game.players, seat), username) do
-      {:ok, %{game | players: List.replace_at(game.players, seat, new_player)}}
-    end
+    new_game
   end
 
   def handle_roll(%DicePoker{} = game, username) do
     if Enum.at(game.players, game.turn).username == username do
       rolled = game |> roll()
 
-      if rolled.roll == 2 do
+      if rolled.roll == 3 do
         {:ok, rolled |> next_turn()}
       else
         {:ok, rolled}
       end
     else
-      :err
+      :error
     end
   end
 
@@ -57,13 +50,13 @@ defmodule Tykar.Games.DicePoker do
     if Enum.at(game.players, game.turn).username == username do
       {:ok, %DicePoker{game | keep: game.keep |> List.update_at(index, &(!&1))}}
     else
-      :err
+      :error
     end
   end
 
-  def handle_pass(%DicePoker{} = game, username) do
+  def handle_pass(%DicePoker{} = game, _username) do
     if game.roll == 0 do
-      :err
+      :error
     else
       {:ok, game |> next_turn()}
     end
@@ -84,13 +77,17 @@ defmodule Tykar.Games.DicePoker do
         end)
       end)
 
-    %{game | thrown: new_thrown, roll: game.roll + 1} |> reset_keep()
+    %{game | thrown: new_thrown, roll: game.roll + 1}
   end
 
   defp next_turn(%DicePoker{} = game) do
     new_turn = rem(game.turn + 1, 2)
 
-    %DicePoker{game | turn: new_turn, roll: 0} |> reset_keep()
+    if new_turn == game.starting_player do
+      game |> next_round()
+    else
+      %DicePoker{game | turn: new_turn, roll: 0} |> reset_keep()
+    end
   end
 
   defp next_round(%DicePoker{} = game) do
