@@ -1,6 +1,7 @@
 when:
-  event: push
-  path: 'front/**/*'
+  - event: push
+    branch: master
+    path: 'front/**/*'
 
 variables:
   - &file front/Dockerfile
