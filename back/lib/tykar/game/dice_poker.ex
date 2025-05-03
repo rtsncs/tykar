@@ -47,7 +47,7 @@ defmodule Tykar.Game.DicePoker do
   end
 
   def handle_keep(%DicePoker{} = game, username, index) do
-    if Enum.at(game.players, game.turn).username == username do
+    if Enum.at(game.players, game.turn).username == username and game.roll != 0 do
       {:ok, %DicePoker{game | keep: game.keep |> List.update_at(index, &(!&1))}}
     else
       :error

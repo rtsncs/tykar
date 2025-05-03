@@ -6,13 +6,13 @@ defmodule Tykar.Game.GenGameServer do
           name
 
         :error ->
-          raise ArgumentError, "expected :channel_name (string) in use Tykar.Game.GameServer"
+          raise ArgumentError, "expected :channel_name (string) in use Tykar.Game.GenGameServer"
       end
 
     game =
       case Keyword.fetch(opts, :game) do
         {:ok, {:__aliases__, _, _} = game} -> Macro.expand(game, __ENV__)
-        :error -> raise ArgumentError, "expected :game (module) in use Tykar.Game.GameServer"
+        :error -> raise ArgumentError, "expected :game (module) in use Tykar.Game.GenGameServer"
       end
 
     quote do
@@ -39,7 +39,7 @@ defmodule Tykar.Game.GenGameServer do
       end
 
       @impl true
-      def handle_cast({"sit_down", seat, username}, game) do
+      def handle_cast({"sit_down", username, %{"seat" => seat}}, game) do
         case unquote(game).sit_down(game, seat, username) do
           {:ok, new_game} ->
             broadcast_game(new_game)
@@ -51,7 +51,7 @@ defmodule Tykar.Game.GenGameServer do
       end
 
       @impl true
-      def handle_cast({"get_up", username}, game) do
+      def handle_cast({"get_up", username, _}, game) do
         case unquote(game).get_up(game, username) do
           {:ok, new_game} ->
             broadcast_game(new_game)
@@ -63,7 +63,7 @@ defmodule Tykar.Game.GenGameServer do
       end
 
       @impl true
-      def handle_cast({"ready", seat, username}, game) do
+      def handle_cast({"ready", username, _}, game) do
         case unquote(game).ready(game, username) do
           {:ok, new_game} ->
             broadcast_game(new_game)
@@ -75,7 +75,7 @@ defmodule Tykar.Game.GenGameServer do
       end
 
       @impl true
-      def handle_cast({"unready", seat, username}, game) do
+      def handle_cast({"unready", username, _}, game) do
         case unquote(game).unready(game, username) do
           {:ok, new_game} ->
             broadcast_game(new_game)
@@ -84,13 +84,6 @@ defmodule Tykar.Game.GenGameServer do
           :error ->
             {:noreply, game}
         end
-      end
-
-      @impl true
-      def handle_cast("start", game) do
-        new_game = unquote(game).start(game)
-        broadcast_game(new_game)
-        {:noreply, new_game}
       end
 
       defp broadcast_game(game) do
@@ -102,6 +95,15 @@ defmodule Tykar.Game.GenGameServer do
             game
           )
 
+        {:noreply, game}
+      end
+    end
+  end
+
+  defmacro __before_compile__(_env) do
+    quote do
+      @impl true
+      def handle_cast(_, game) do
         {:noreply, game}
       end
     end

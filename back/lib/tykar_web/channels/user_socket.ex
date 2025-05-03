@@ -21,6 +21,8 @@ defmodule TykarWeb.UserSocket do
 
   channel "makao:lobby", TykarWeb.MakaoLobbyChannel
   channel "makao:*", TykarWeb.MakaoChannel
+  channel "dice_poker:lobby", TykarWeb.DicePokerLobbyChannel
+  channel "dice_poker:*", TykarWeb.DicePokerChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
