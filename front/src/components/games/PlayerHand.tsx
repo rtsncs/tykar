@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { PlayingCardProps } from "./PlayingCard";
-import { MakaoPlayer } from "../routes/MakaoRoom";
+import { MakaoPlayer } from "../../routes/MakaoRoom";
 import CardHand from "./CardHand";
 
 function PlayerHand({

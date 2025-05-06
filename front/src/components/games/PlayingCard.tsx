@@ -1,4 +1,4 @@
-import "../styles/PlayingCard.css";
+import "../../styles/PlayingCard.css";
 import { Box, Stack } from "@chakra-ui/react";
 import React from "react";
 

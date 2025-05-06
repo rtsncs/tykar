@@ -6,11 +6,11 @@ import {
   GridItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import CardHand from "./CardHand";
-import { MakaoGame } from "../routes/MakaoRoom";
-import { PlayingCardProps } from "./PlayingCard";
-import { useSession } from "../AuthProvider";
-import PlayerHand from "./PlayerHand";
+import CardHand from "../CardHand";
+import { MakaoGame } from "../../../routes/MakaoRoom";
+import { PlayingCardProps } from "../PlayingCard";
+import { useSession } from "../../../AuthProvider";
+import PlayerHand from "../PlayerHand";
 import MakaoDemandModal from "./MakaoDemandModal";
 import MakaoGameFinishedModal from "./MakaoGameFinishedModal";
 import { useTranslation } from "react-i18next";

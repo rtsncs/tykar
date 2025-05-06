@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogCloseTrigger,
-} from "./ui/dialog";
+} from "../../ui/dialog";
 import { useTranslation } from "react-i18next";
 
 function MakaoDemandModal(props: {
