@@ -56,12 +56,9 @@ defmodule TykarWeb.Router do
 
   # Enable Swagger, LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:tykar, :dev_routes) do
-    import Phoenix.LiveDashboard.Router
-
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: TykarWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
       get "/openapi", OpenApiSpex.Plug.RenderSpec, :show
       get "/swagger", OpenApiSpex.Plug.SwaggerUI, path: "/dev/openapi"
