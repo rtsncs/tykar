@@ -1,13 +1,13 @@
 import { Channel, Presence } from "phoenix";
 import { useEffect, useRef, useState } from "react";
-import { useSocket } from "../SocketProvider";
+import { useSocket } from "../hooks/SocketProvider";
 import { useNavigate, useParams } from "react-router";
 import UserList from "../components/games/UserList";
-import MakaoTable from "../components/games/makao/MakaoTable";
+import MakaoTable from "../components/games/Makao/MakaoTable";
 import { Box, Button, HStack } from "@chakra-ui/react";
-import Chat from "../components/games/Chat";
-import { ChatMessageProps } from "../components/games/ChatMessage";
-import Seats from "../components/games/Seats";
+import Chat from "../components/games/Sidebar/Chatbar/Chat";
+import { ChatMessageProps } from "../components/games/Sidebar/ChatMessagetMessage";
+import Seats from "../components/games/Sidebar/Seatsar/Seats";
 import FullscreenSpinner from "../components/FullsreenSpinner";
 import { PlayingCardProps } from "../components/games/PlayingCard";
 

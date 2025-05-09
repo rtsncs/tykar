@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import "./App.css";
-import Header from "./components/header";
+import Header from "./components/Header";
 import { Container, Spinner } from "@chakra-ui/react";
 import { Suspense } from "react";
 

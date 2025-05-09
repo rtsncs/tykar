@@ -20,10 +20,16 @@ defmodule Tykar.Game.DicePoker.Server do
   end
 
   @impl true
-  def handle_cast({"keep", username, %{"index" => index}}, %DicePoker{} = game) do
-    case game |> DicePoker.handle_keep(username, index) do
+  def handle_cast({"keep", username, %{"index" => index, "value" => value}}, %DicePoker{} = game)
+      when is_number(index) and is_boolean(value) do
+    case game |> DicePoker.handle_keep(username, index, value) do
       {:ok, game} -> broadcast_game(game)
       :error -> {:noreply, game}
     end
+  end
+
+  @impl true
+  def handle_cast(_, game) do
+    {:noreply, game}
   end
 end

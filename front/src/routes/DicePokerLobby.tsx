@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import RoomList from "../components/RoomList";
 import { useTranslation } from "react-i18next";
 
-function Makao() {
+function DicePokerLobby() {
   const socket = useSocket();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ function Makao() {
 
   useEffect(() => {
     if (!socket) return;
-    channelRef.current = socket.channel("makao:lobby");
+    channelRef.current = socket.channel("dice_poker:lobby");
     presenceRef.current = new Presence(channelRef.current);
 
     presenceRef.current.onSync(() => {
@@ -53,4 +53,4 @@ function Makao() {
   );
 }
 
-export default Makao;
+export default DicePokerLobby;

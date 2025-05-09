@@ -29,10 +29,12 @@
   "email_change_send": "Link potwierdzający został wysłany na nowy adres e-mail",
   "invalid_password": "Nieprawidłowe hasło",
   "new_room": "Stwórz pokój",
-  "seat_down": "Usiądź",
+  "sit_down": "Usiądź",
+  "ready": "Gotów",
   "start": "Start",
   "send": "Wyślij",
   "pass": "Pasuj",
+  "roll": "Rzuć",
   "draw_card": "Bierz",
   "make_demand": "Żądaj",
   "current_demand": "Żądanie: {{demand}}",
@@ -42,5 +44,7 @@
   "user_confirm_success": "Użytkownik został pomyślnie potwierdzony",
   "user_confirm_error": "Link potwierdzający użytkownika jest nieprawidłowy lub wygasł",
   "email_change_success": "E-mail został pomyślnie zmieniony",
-  "email_change_error": "Link do zmiany e-maila jest nieprawidłowy lub wygasł"
+  "email_change_error": "Link do zmiany e-maila jest nieprawidłowy lub wygasł",
+  "users": "Użytkownicy",
+  "chat": "Chat"
 }

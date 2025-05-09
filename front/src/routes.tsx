@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
+import DicePokerLobby from "./routes/DicePokerLobby.tsx";
+import DicePokerRoom from "./routes/DicePokerRoom.tsx";
 
 const App = lazy(() => import("./App.tsx"));
 const Index = lazy(() => import("./routes/Index.tsx"));
@@ -18,12 +20,14 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Index /> },
       { path: "makao", element: <Makao /> },
+      { path: "dice_poker", element: <DicePokerLobby /> },
       { path: "/settings", element: <Settings /> },
       { path: "/settings/confirm_email/:token", element: <ConfirmEmail /> },
       { path: "/confirm/:token", element: <ConfirmUser /> },
     ],
   },
   { path: "makao/:roomId", element: <MakaoRoom /> },
+  { path: "dice_poker/:roomId", element: <DicePokerRoom /> },
 ]);
 
 export default router;

@@ -14,7 +14,7 @@ defmodule Tykar.Game.Seat do
   end
 
   def sit_down(_seat, _username) do
-    :err
+    :error
   end
 
   def get_up(%Seat{} = seat) when not is_free(seat) do
@@ -22,7 +22,7 @@ defmodule Tykar.Game.Seat do
   end
 
   def get_up(_seat) do
-    :err
+    :error
   end
 
   def ready(%Seat{} = seat) do

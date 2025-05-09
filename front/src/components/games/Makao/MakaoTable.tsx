@@ -9,7 +9,7 @@ import {
 import CardHand from "../CardHand";
 import { MakaoGame } from "../../../routes/MakaoRoom";
 import { PlayingCardProps } from "../PlayingCard";
-import { useSession } from "../../../AuthProvider";
+import { useSession } from "../../../hooks/AuthProvider";
 import PlayerHand from "../PlayerHand";
 import MakaoDemandModal from "./MakaoDemandModal";
 import MakaoGameFinishedModal from "./MakaoGameFinishedModal";

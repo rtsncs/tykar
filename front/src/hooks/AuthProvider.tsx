@@ -6,8 +6,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useApi } from "./api/ApiProvider";
-import type { components } from "./api/api";
+import { useApi } from "./ApiProvider";
+import type { components } from "../@types/api";
 
 export type LoginRequest = components["schemas"]["LoginRequest"];
 type CurrentUser = components["schemas"]["CurrentUserResponse"];

@@ -29,10 +29,12 @@
   "email_change_sent": "A confirmation link has been sent to your new email address",
   "invalid_password": "Incorrect password",
   "new_room": "Create room",
-  "seat_down": "Seat down",
+  "sit_down": "Sit down",
+  "ready": "Ready",
   "start": "Start",
   "send": "Send",
   "pass": "Pass",
+  "roll": "Roll",
   "draw_card": "Draw",
   "make_demand": "Demand",
   "current_demand": "Demand: {{demand}}",
@@ -42,5 +44,7 @@
   "user_confirm_success": "User confirmed successfully",
   "user_confirm_error": "User confirmation link is invalid or it has expired",
   "email_change_success": "Email changed successfully",
-  "email_change_error": "Email change link is invalid or it has expired"
+  "email_change_error": "Email change link is invalid or it has expired",
+  "users": "Users",
+  "chat": "Chat"
 }

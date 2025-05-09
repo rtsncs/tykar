@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useApi } from "../api/ApiProvider";
+import { useApi } from "../hooks/ApiProvider";
 import { toaster } from "../components/ui/toaster";
 import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
-import { useSession } from "../AuthProvider";
+import { useSession } from "../hooks/AuthProvider";
 
 function ConfirmEmail() {
   const { token } = useParams();

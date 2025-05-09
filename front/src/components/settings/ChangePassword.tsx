@@ -18,7 +18,7 @@ import {
 } from "../ui/dialog";
 import { PasswordInput } from "../ui/password-input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useApi } from "../../api/ApiProvider";
+import { useApi } from "../../hooks/ApiProvider";
 import { useState } from "react";
 import { toaster } from "../ui/toaster";
 import { useTranslation } from "react-i18next";
