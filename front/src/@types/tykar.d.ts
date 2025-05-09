@@ -1,3 +1,5 @@
+import { Channel, Presence } from "phoenix";
+
 export interface Player {
   username: string | null;
   score: number;
@@ -14,3 +16,10 @@ type GameAction =
   | { type: "stand_up" }
   | { type: "ready" }
   | { type: "unready" };
+
+type GameHook = () => {
+  game: Game;
+  dispatch: ActionDispatch<[action: GameAction]>;
+  channel: Channel;
+  presence: Presence;
+};

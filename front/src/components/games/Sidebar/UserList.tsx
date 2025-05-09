@@ -1,6 +1,29 @@
 import { Box, VStack } from "@chakra-ui/react";
+import { GameHook } from "../../../@types/tykar";
+import { useEffect, useState } from "react";
 
-function UserList({ users }: { users: string[] }) {
+function UserList({ gameHook }: { gameHook: GameHook }) {
+  const { presence } = gameHook();
+  const [users, setUsers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const updateUsers = () => {
+      const new_users: string[] = [];
+      presence.list((username) => {
+        new_users.push(username);
+      });
+      new_users.sort();
+      setUsers(new_users);
+    };
+
+    updateUsers();
+    presence.onSync(updateUsers);
+
+    return () => {
+      setUsers([]);
+    };
+  }, [presence]);
+
   return (
     <VStack
       borderTop="none"

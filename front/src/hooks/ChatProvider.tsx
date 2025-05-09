@@ -6,7 +6,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Channel } from "phoenix";
+import { t } from "i18next";
+import { GameHook } from "../@types/tykar";
 
 export interface ChatMessage {
   author: string;
@@ -21,23 +22,58 @@ interface Chat {
 const ChatContext = createContext<Chat | null>(null);
 
 export function ChatProvider({
-  channel,
+  gameHook,
   children,
 }: {
-  channel: Channel | null;
+  gameHook: GameHook;
   children: ReactNode | null;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  useEffect(() => {
-    if (channel) {
-      channel.on("shout", (message: ChatMessage) => {
-        setMessages((messages) => [...messages, message]);
-      });
+  const { game, channel, presence } = gameHook();
 
-      return () => channel.off("shout");
-    }
-  }, [channel]);
+  useEffect(() => {
+    channel.on("shout", (message: ChatMessage) => {
+      setMessages((messages) => [...messages, message]);
+    });
+    channel.on("system", (message: { event: string; payload: unknown }) => {
+      switch (message.event) {
+        case "win": {
+          const chatMessage: ChatMessage = {
+            author: "",
+            content: t("user_won", {
+              username: game.players[message.payload as number].username,
+            }),
+          };
+          setMessages((messages) => [...messages, chatMessage]);
+        }
+      }
+    });
+
+    presence.onJoin((username) => {
+      if (username) {
+        const chatMessage: ChatMessage = {
+          author: "",
+          content: t("joined", { username }),
+        };
+        setMessages((messages) => [...messages, chatMessage]);
+      }
+    });
+    presence.onLeave((username) => {
+      if (username) {
+        const chatMessage: ChatMessage = {
+          author: "",
+          content: t("left", { username }),
+        };
+        setMessages((messages) => [...messages, chatMessage]);
+      }
+    });
+
+    return () => {
+      channel.off("shout");
+      channel.off("system");
+    };
+  }, [channel, presence, game.players]);
 
   const sendMessage = useCallback(
     (content: string) => {

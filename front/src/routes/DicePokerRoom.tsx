@@ -1,9 +1,14 @@
 import { Channel, Presence } from "phoenix";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../hooks/SocketProvider";
 import { useNavigate, useParams } from "react-router";
 import { HStack } from "@chakra-ui/react";
-import { DicePokerProvider, useDicePoker } from "../hooks/DicePokerProvider";
+import {
+  DicePokerAction,
+  DicePokerContext,
+  DicePokerGame,
+  useDicePoker,
+} from "../hooks/DicePokerProvider";
 import DicePokerTable from "../components/games/DicePokerTable";
 import FullscreenSpinner from "../components/FullsreenSpinner";
 import Sidebar from "../components/games/Sidebar/";
@@ -14,47 +19,81 @@ function DicePokerRoom() {
   const navigate = useNavigate();
 
   const [channel, setChannel] = useState<Channel | null>(null);
-  const presenceRef = useRef<Presence | null>(null);
+  const [presence, setPresence] = useState<Presence | null>(null);
 
-  const [users, setUsers] = useState<string[]>([]);
+  const dispatch = useCallback(
+    (action: DicePokerAction) => {
+      if (!channel) return;
+      switch (action.type) {
+        case "roll": {
+          channel.push("roll", {});
+          break;
+        }
+        case "pass": {
+          channel.push("pass", {});
+          break;
+        }
+        case "keep": {
+          channel.push("keep", { index: action.index, value: action.value });
+          break;
+        }
+        case "sit_down": {
+          channel.push("sit_down", { seat: action.seat });
+          break;
+        }
+        case "stand_up": {
+          channel.push("stand_up", {});
+          break;
+        }
+        case "ready": {
+          channel.push("ready", {});
+          break;
+        }
+        case "unready": {
+          channel.push("unready", {});
+          break;
+        }
+        default:
+          throw Error("unknown action");
+      }
+    },
+    [channel],
+  );
+
+  const [game, setGame] = useState<DicePokerGame | null>(null);
 
   useEffect(() => {
     if (!socket) return;
     const newChannel = socket.channel(`dice_poker:${roomId}`);
     setChannel(newChannel);
-    presenceRef.current = new Presence(newChannel);
-
-    presenceRef.current.onSync(() => {
-      const new_users: string[] = [];
-      presenceRef.current?.list((username) => {
-        new_users.push(username);
-      });
-      new_users.sort();
-      setUsers(new_users);
-    });
+    const newPresence = new Presence(newChannel);
+    setPresence(newPresence);
 
     newChannel.join().receive("error", () => {
       void navigate("..", { relative: "path" });
+    });
+    newChannel.on("game", (game: DicePokerGame) => {
+      setGame(game);
     });
 
     return () => {
       newChannel.leave();
       setChannel(null);
-      presenceRef.current = null;
+      setPresence(null);
     };
   }, [socket, roomId, navigate]);
 
-  if (!channel) {
+  if (!channel || !game || !presence) {
     return <FullscreenSpinner />;
   }
 
   return (
-    <DicePokerProvider channel={channel}>
+    <DicePokerContext.Provider value={{ game, dispatch, channel, presence }}>
       <HStack gap="0">
         <DicePokerTable />
-        <Sidebar users={users} channel={channel} gameHook={useDicePoker} />
+        <Sidebar gameHook={useDicePoker} />
       </HStack>
-    </DicePokerProvider>
+    </DicePokerContext.Provider>
   );
 }
 

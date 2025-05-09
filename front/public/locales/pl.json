@@ -40,11 +40,14 @@
   "current_demand": "Żądanie: {{demand}}",
   "to_draw": "Do wzięcia: {{count}}",
   "to_block": "Do zablokowania: {{count}}",
-  "user_lost": "Użytkownik {{username}} przegrał",
+  "user_lost": "{{username}} przegrał",
+  "user_win": "{{username}} wygrał",
   "user_confirm_success": "Użytkownik został pomyślnie potwierdzony",
   "user_confirm_error": "Link potwierdzający użytkownika jest nieprawidłowy lub wygasł",
   "email_change_success": "E-mail został pomyślnie zmieniony",
   "email_change_error": "Link do zmiany e-maila jest nieprawidłowy lub wygasł",
   "users": "Użytkownicy",
-  "chat": "Chat"
+  "chat": "Czat",
+  "joined": "{{username}} dołączył",
+  "left": "{{username}} wyszedł"
 }
