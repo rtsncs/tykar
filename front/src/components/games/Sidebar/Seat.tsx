@@ -1,7 +1,7 @@
 import { Center, Button, Group, Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Player } from "../../../@types/tykar";
-import { LuCheck, LuX } from "react-icons/lu";
+import { LuCheck, LuTrophy, LuX } from "react-icons/lu";
 
 function Seat({
   player,
@@ -35,7 +35,10 @@ function Seat({
         bg="bg.panel"
         justifyContent="space-between"
       >
-        <Box>{player.score}</Box>
+        <Group>
+          <LuTrophy />
+          <Box>{player.score}</Box>
+        </Group>
         {player.is_ready ? <LuCheck /> : <LuX />}
       </Group>
     </Group>

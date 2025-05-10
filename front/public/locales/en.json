@@ -40,6 +40,7 @@
   "current_demand": "Demand: {{demand}}",
   "to_draw": "To draw: {{count}}",
   "to_block": "To block: {{count}}",
+  "roll_number": "Roll {{roll}}",
   "user_lost": "{{username}} lost",
   "user_won": "{{username}} won",
   "user_confirm_success": "User confirmed successfully",

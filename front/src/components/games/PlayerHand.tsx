@@ -1,22 +1,19 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { PlayingCardProps } from "./PlayingCard";
-import { MakaoPlayer } from "../../routes/MakaoRoom";
-import CardHand from "./CardHand";
+// import { PlayingCardProps } from "./PlayingCard";
+// import CardHand from "./CardHand";
+import { Player } from "../../@types/tykar";
+import { ReactNode } from "react";
 
 function PlayerHand({
   player,
   position,
-  onClick,
   turn,
+  children,
 }: {
-  player?: MakaoPlayer;
+  player: Player;
   position: "top" | "bottom" | "left" | "right";
-
-  onClick?: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    card: PlayingCardProps,
-  ) => void;
   turn: boolean;
+  children: ReactNode;
 }) {
   if (!player) return;
   let flexDirection: "column" | "column-reverse" | "row" | "row-reverse";
@@ -45,6 +42,12 @@ function PlayerHand({
       writingMode = "horizontal-tb";
       break;
   }
+  // {player.blocked !== 0 && ` [${player.blocked}]`}
+  // <CardHand
+  //   cards={player.hand}
+  //   direction={cardsDirection}
+  //   onClick={onClick}
+  // />
 
   return (
     <Flex
@@ -52,16 +55,14 @@ function PlayerHand({
       alignItems="center"
       justifyContent="center"
       color="white"
+      gap="3"
     >
       <Box style={{ writingMode }}>
-        {turn ? <b>{`>${player.name}<`}</b> : player.name}
-        {player.blocked !== 0 && ` [${player.blocked}]`}
+        {turn ? <b>{`>${player.username}<`}</b> : player.username}
       </Box>
-      <CardHand
-        cards={player.hand}
-        direction={cardsDirection}
-        onClick={onClick}
-      />
+      <Flex direction={cardsDirection} gap="3">
+        {children}
+      </Flex>
     </Flex>
   );
 }

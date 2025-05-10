@@ -68,6 +68,18 @@ defmodule Tykar.Game do
         :error
       end
 
+      defp broadcast_system_message(game, event, payload) do
+        :ok =
+          TykarWeb.Endpoint.broadcast_from!(
+            self(),
+            game.channel_name <> ":" <> game.room_id,
+            "system",
+            %{"event" => event, "payload" => payload}
+          )
+
+        {:noreply, game}
+      end
+
       defoverridable Tykar.Game
     end
   end

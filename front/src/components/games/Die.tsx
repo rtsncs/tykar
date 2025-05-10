@@ -71,6 +71,10 @@ export default function Die({
       templateColumns="repeat(3, 1fr)"
       templateRows="repeat(3, 1fr)"
       onClick={onClick}
+      cursor={onClick ? "button" : "default"}
+      _hover={
+        onClick ? { borderColor: "black", borderWidth: "1px" } : undefined
+      }
     >
       {face.map((hasDot, index) =>
         hasDot ? <Dot key={index} /> : <div key={index} />,

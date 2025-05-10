@@ -4,16 +4,18 @@ defmodule Tykar.Game.DicePoker do
   alias Tykar.Game.DicePoker
   alias Tykar.Game.Seat
 
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, except: [:room_id, :channel_name]}
   defstruct [
     :room_id,
+    channel_name: "dice_poker",
     players: List.duplicate(%Seat{}, 2),
     status: :setup,
     turn: -1,
     roll: 0,
     starting_player: -1,
     thrown: List.duplicate(List.duplicate(0, 5), 2),
-    keep: List.duplicate(false, 5)
+    keep: List.duplicate(false, 5),
+    winner: nil
   ]
 
   @impl Tykar.Game
@@ -93,14 +95,26 @@ defmodule Tykar.Game.DicePoker do
   defp next_round(%DicePoker{} = game) do
     new_turn = rem(game.turn + 1, 2)
 
-    new_players =
+    {winner, new_players} =
       case compare_hands(game.thrown) do
-        :a_wins -> game.players |> List.update_at(0, fn x -> %{x | score: x.score + 1} end)
-        :b_wins -> game.players |> List.update_at(1, fn x -> %{x | score: x.score + 1} end)
-        :draw -> game.players
+        :a_wins ->
+          broadcast_system_message(game, "win", 0)
+
+          {(game.players |> Enum.at(0)).username,
+           game.players |> List.update_at(0, fn x -> %{x | score: x.score + 1} end)}
+
+        :b_wins ->
+          broadcast_system_message(game, "win", 1)
+
+          {(game.players |> Enum.at(1)).username,
+           game.players |> List.update_at(1, fn x -> %{x | score: x.score + 1} end)}
+
+        :draw ->
+          {nil, game.players}
       end
 
-    %DicePoker{game | turn: new_turn, roll: 0, players: new_players} |> reset_keep()
+    %DicePoker{game | turn: new_turn, roll: 0, players: new_players, winner: winner}
+    |> reset_keep()
   end
 
   defp reset_keep(%DicePoker{} = game) do

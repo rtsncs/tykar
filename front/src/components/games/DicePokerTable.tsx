@@ -1,8 +1,9 @@
-import { Box, Button, Center, Grid, Group, Spinner } from "@chakra-ui/react";
+import { Box, Button, Card, Grid, Group } from "@chakra-ui/react";
 import { useDicePoker } from "../../hooks/DicePokerProvider";
 import { useSession } from "../../hooks/AuthProvider";
 import Die from "./Die";
 import { t } from "i18next";
+import PlayerHand from "./PlayerHand";
 
 export default function DicePokerTable() {
   const { game, dispatch } = useDicePoker();
@@ -20,69 +21,102 @@ export default function DicePokerTable() {
     return null;
   })();
 
-  const keepHandler = (index: number) => {
-    if (game?.turn === userSeatIdx) {
-      dispatch({ type: "keep", index, value: !game?.keep[index] });
+  const keepHandler =
+    game?.turn === userSeatIdx && game.roll !== 0
+      ? (index: number) => {
+          dispatch({ type: "keep", index, value: !game?.keep[index] });
+        }
+      : null;
+
+  const topHandSeat = ((userSeatIdx ?? 0) + 1) % 2;
+  const bottomHandSeat = userSeatIdx ?? 0;
+
+  const displayHand = (index: number) => {
+    if (game.thrown[index][0] == 0) {
+      return false;
     }
+    // show result of previous round
+    if (game.turn == game.starting_player && game.roll == 0) {
+      return true;
+    }
+    if (game.starting_player == index) {
+      return game.turn != index || game.roll != 0;
+    }
+    return game.turn == index && game.roll != 0;
   };
 
-  if (!game) {
-    return (
-      <Center bg="green" w="75vw" h="100vh">
-        <Spinner size="xl" color="white" />
-      </Center>
-    );
-  }
+  const canRoll =
+    game.players[game.turn]?.username === session?.username &&
+    game.keep.some((k) => k == false);
+  const canPass =
+    game.players[game.turn]?.username === session?.username && game.roll != 0;
 
   return (
-    <Box bg="green" w="75vw" h="100vh">
-      <Grid
-        templateAreas={`"tl hand2 tr"
-                        "hand1 played hand3"
-                        "ml hand0 mr"
-                        "bl bm br"`}
-        templateRows={"1fr 1fr 1fr 0fr"}
-        templateColumns={"1fr 1fr 1fr"}
-        h="100%"
-        w="100%"
-        alignItems="center"
-        justifyItems="center"
-        pb="16px"
-      >
-        <Group gridArea="hand2">
-          {game.thrown[((userSeatIdx ?? 0) + 1) % 2].map((number, index) => (
-            <Die number={number} key={index} rotate />
-          ))}
-        </Group>
-        <Group gridArea="hand0">
-          {game.thrown[userSeatIdx ?? 0].map((number, index) => (
-            <Die
-              number={number}
-              key={index}
-              onClick={() => keepHandler(index)}
-              selected={game.keep[index]}
-              rotate
-            />
-          ))}
-        </Group>
-        <Group gridArea="bm">
-          <Button
-            disabled={game.players[game.turn]?.username !== session?.username}
-            onClick={() => dispatch({ type: "roll" })}
-          >
-            {t("roll")}
-          </Button>
-          <Button
-            disabled={
-              game.players[game.turn]?.username !== session?.username ||
-              game.roll == 0
-            }
-            onClick={() => dispatch({ type: "pass" })}
-          >
-            {t("pass")}
-          </Button>
-        </Group>
-      </Grid>
-    </Box>
+    <Grid
+      templateAreas={`"tl hand2 tr"
+                      "hand1 played hand3"
+                      "ml hand0 mr"
+                      "bl bm br"`}
+      templateRows={"1fr 1fr 1fr 0fr"}
+      templateColumns={"1fr 1fr 1fr"}
+      h="100vh"
+      w="75vw"
+      alignItems="center"
+      justifyItems="center"
+      pb="16px"
+      bg="green"
+      color="white"
+    >
+      <Box p="3" w="100%" h="100%" gridArea="tl">
+        {t("roll_number", { roll: game.roll + 1 })}
+      </Box>
+      {game.winner && game.turn == game.starting_player && game.roll == 0 && (
+        <Card.Root gridArea="played">
+          <Card.Body>
+            <Card.Title px="10">
+              {t("user_won", { username: game.winner })}
+            </Card.Title>
+          </Card.Body>
+        </Card.Root>
+      )}
+      <Box gridArea="hand2">
+        <PlayerHand
+          position="top"
+          player={game.players[topHandSeat]}
+          turn={game.turn === topHandSeat}
+        >
+          {displayHand(topHandSeat) &&
+            game.thrown[topHandSeat].map((number, index) => (
+              <Die number={number} key={index} rotate />
+            ))}
+        </PlayerHand>
+      </Box>
+      <Box gridArea="hand0">
+        <PlayerHand
+          position="bottom"
+          player={game.players[bottomHandSeat]}
+          turn={game.turn === bottomHandSeat}
+        >
+          {displayHand(bottomHandSeat) &&
+            game.thrown[bottomHandSeat].map((number, index) => (
+              <Die
+                number={number}
+                key={index}
+                onClick={keepHandler ? () => keepHandler(index) : undefined}
+                selected={game.keep[index]}
+                rotate
+              />
+            ))}
+        </PlayerHand>
+      </Box>
+      <Group gridArea="bm">
+        <Button disabled={!canRoll} onClick={() => dispatch({ type: "roll" })}>
+          {t("roll")}
+        </Button>
+        <Button disabled={!canPass} onClick={() => dispatch({ type: "pass" })}>
+          {t("pass")}
+        </Button>
+      </Group>
+    </Grid>
   );
 }

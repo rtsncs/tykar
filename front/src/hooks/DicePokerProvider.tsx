@@ -12,6 +12,7 @@ export interface DicePokerGame extends Game {
     [number, number, number, number, number],
   ];
   keep: [boolean, boolean, boolean, boolean, boolean];
+  winner: string | null;
 }
 
 export type DicePokerAction =
