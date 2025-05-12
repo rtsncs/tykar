@@ -1,131 +1,103 @@
 import { Channel, Presence } from "phoenix";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../hooks/SocketProvider";
 import { useNavigate, useParams } from "react-router";
-import UserList from "../components/games/UserList";
 import MakaoTable from "../components/games/Makao/MakaoTable";
-import { Box, Button, HStack } from "@chakra-ui/react";
-import Chat from "../components/games/Sidebar/Chatbar/Chat";
-import { ChatMessageProps } from "../components/games/Sidebar/ChatMessagetMessage";
-import Seats from "../components/games/Sidebar/Seatsar/Seats";
+import { HStack } from "@chakra-ui/react";
 import FullscreenSpinner from "../components/FullsreenSpinner";
-import { PlayingCardProps } from "../components/games/PlayingCard";
-
-export interface MakaoGame {
-  players: [MakaoPlayer?, MakaoPlayer?, MakaoPlayer?, MakaoPlayer?];
-  status: "setup" | "in_progress" | "finished";
-  turn: number;
-  lastTurn: number;
-  played: PlayingCardProps[];
-  toDraw: number;
-  toBlock: number;
-  drawn?: PlayingCardProps;
-  demand: string;
-  winners: [string];
-}
-
-export interface MakaoPlayer {
-  name: string;
-  hand: PlayingCardProps[] | number;
-  blocked: number;
-}
+import {
+  MakaoAction,
+  MakaoContext,
+  MakaoGame,
+  useMakao,
+} from "../hooks/MakaoProvider";
+import Sidebar from "../components/games/Sidebar";
 
 function MakaoRoom() {
   const { roomId } = useParams();
   const socket = useSocket();
   const navigate = useNavigate();
 
-  const channelRef = useRef<Channel | null>(null);
-  const presenceRef = useRef<Presence | null>(null);
+  const [channel, setChannel] = useState<Channel | null>(null);
+  const [presence, setPresence] = useState<Presence | null>(null);
 
-  const [users, setUsers] = useState<string[]>([]);
-  const [messages, setMessages] = useState<ChatMessageProps[]>([]);
+  const dispatch = useCallback(
+    (action: MakaoAction) => {
+      if (!channel) return;
+      switch (action.type) {
+        case "play": {
+          channel.push("play", { card: action.card });
+          break;
+        }
+        case "demand": {
+          channel.push("demand", { demand: action.demand });
+          break;
+        }
+        case "draw": {
+          channel.push("draw", {});
+          break;
+        }
+        case "pass": {
+          channel.push("pass", {});
+          break;
+        }
+        case "sit_down": {
+          channel.push("sit_down", { seat: action.seat });
+          break;
+        }
+        case "stand_up": {
+          channel.push("stand_up", {});
+          break;
+        }
+        case "ready": {
+          channel.push("ready", {});
+          break;
+        }
+        case "unready": {
+          channel.push("unready", {});
+          break;
+        }
+        default:
+          throw Error("unknown action");
+      }
+    },
+    [channel],
+  );
 
   const [game, setGame] = useState<MakaoGame | null>(null);
 
-  const onSendMessage = (content: string) => {
-    channelRef.current?.push("shout", { content });
-  };
-
-  const onTakeSeat = (seat: number) => {
-    channelRef.current?.push("take_seat", { seat });
-  };
-
-  const onStart = () => {
-    channelRef.current?.push("start", {});
-  };
-
-  const onPlayCard = (e: unknown, card: PlayingCardProps) => {
-    void e;
-    channelRef.current?.push("play", card);
-  };
-
-  const onDrawCard = () => {
-    channelRef.current?.push("draw", {});
-  };
-
-  const onDemand = (demand: string) => {
-    channelRef.current?.push("demand", { demand });
-  };
-
-  const onPass = () => {
-    channelRef.current?.push("pass", {});
-  };
-
   useEffect(() => {
     if (!socket) return;
-    channelRef.current = socket.channel(`makao:${roomId}`);
-    presenceRef.current = new Presence(channelRef.current);
+    const newChannel = socket.channel(`makao:${roomId}`);
+    setChannel(newChannel);
+    const newPresence = new Presence(newChannel);
+    setPresence(newPresence);
 
-    presenceRef.current.onSync(() => {
-      const new_users: string[] = [];
-      presenceRef.current?.list((username) => {
-        new_users.push(username);
-      });
-      new_users.sort();
-      setUsers(new_users);
-    });
-
-    channelRef.current.on("shout", (message: ChatMessageProps) =>
-      setMessages((messages) => [...messages, message]),
-    );
-
-    channelRef.current.on("game", (game: MakaoGame) => setGame(game));
-
-    channelRef.current.join().receive("error", () => {
+    newChannel.join().receive("error", () => {
       void navigate("..", { relative: "path" });
+    });
+    newChannel.on("game", (game: MakaoGame) => {
+      setGame(game);
     });
 
     return () => {
-      channelRef.current?.leave();
-      channelRef.current = null;
-      presenceRef.current = null;
+      newChannel.leave();
+      setChannel(null);
+      setPresence(null);
     };
   }, [socket, roomId, navigate]);
 
-  if (!game) {
+  if (!channel || !game || !presence) {
     return <FullscreenSpinner />;
   }
 
   return (
-    <>
-      <HStack>
-        <MakaoTable
-          game={game}
-          onDrawCard={onDrawCard}
-          onPlayCard={onPlayCard}
-          onDemand={onDemand}
-          onPass={onPass}
-        />
-        <Box width="25vw">
-          {roomId}
-          <Seats players={game.players} onClick={onTakeSeat} />
-          <Button onClick={onStart}>Start</Button>
-          <UserList users={users} />
-          <Chat messages={messages} onSend={onSendMessage} />
-        </Box>
+    <MakaoContext.Provider value={{ game, dispatch, channel, presence }}>
+      <HStack gap="0">
+        <MakaoTable />
+        <Sidebar gameHook={useMakao} />
       </HStack>
-    </>
+    </MakaoContext.Provider>
   );
 }
 

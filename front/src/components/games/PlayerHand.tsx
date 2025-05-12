@@ -1,6 +1,4 @@
 import { Box, Flex } from "@chakra-ui/react";
-// import { PlayingCardProps } from "./PlayingCard";
-// import CardHand from "./CardHand";
 import { Player } from "../../@types/tykar";
 import { ReactNode } from "react";
 
@@ -8,11 +6,13 @@ function PlayerHand({
   player,
   position,
   turn,
+  playerInfo,
   children,
 }: {
   player: Player;
   position: "top" | "bottom" | "left" | "right";
   turn: boolean;
+  playerInfo?: string | number;
   children: ReactNode;
 }) {
   if (!player) return;
@@ -42,12 +42,17 @@ function PlayerHand({
       writingMode = "horizontal-tb";
       break;
   }
-  // {player.blocked !== 0 && ` [${player.blocked}]`}
-  // <CardHand
-  //   cards={player.hand}
-  //   direction={cardsDirection}
-  //   onClick={onClick}
-  // />
+
+  let playerString = "";
+  if (player?.username) {
+    playerString = player.username;
+  }
+  if (turn) {
+    playerString = `>${playerString}<`;
+  }
+  if (playerInfo) {
+    playerString = `${playerString} [${playerInfo}]`;
+  }
 
   return (
     <Flex
@@ -57,8 +62,8 @@ function PlayerHand({
       color="white"
       gap="3"
     >
-      <Box style={{ writingMode }}>
-        {turn ? <b>{`>${player.username}<`}</b> : player.username}
+      <Box style={{ writingMode }} fontWeight={turn ? "bold" : ""}>
+        {playerString}
       </Box>
       <Flex direction={cardsDirection} gap="3">
         {children}

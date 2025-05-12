@@ -10,10 +10,7 @@ function CardHand({
   cards: PlayingCardProps[] | number;
   isDisabled?: boolean[];
   direction?: "column" | "row";
-  onClick?: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    card: PlayingCardProps,
-  ) => void;
+  onClick?: (card: PlayingCardProps) => void;
 }) {
   const cardElements = [];
   const isArray = cards instanceof Array;

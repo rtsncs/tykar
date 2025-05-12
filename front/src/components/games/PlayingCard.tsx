@@ -1,6 +1,5 @@
 import "../../styles/PlayingCard.css";
 import { Box, Stack } from "@chakra-ui/react";
-import React from "react";
 
 export type Rank =
   | "A"
@@ -42,15 +41,12 @@ function PlayingCard({
   direction,
 }: {
   card?: PlayingCardProps;
-  onClick?: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    card: PlayingCardProps,
-  ) => void;
+  onClick?: (card: PlayingCardProps) => void;
   direction?: "column" | "row";
 }) {
   const handleClick = onClick
-    ? (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (!card?.disabled) onClick(event, card!);
+    ? () => {
+        if (!card?.disabled) onClick(card!);
       }
     : undefined;
   const wrapper_props =
