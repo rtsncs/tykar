@@ -50,5 +50,7 @@
   "users": "Użytkownicy",
   "chat": "Czat",
   "joined": "{{username}} dołączył",
-  "left": "{{username}} wyszedł"
+  "left": "{{username}} wyszedł",
+  "makao": "Makao",
+  "dice_poker": "Kościany Poker"
 }

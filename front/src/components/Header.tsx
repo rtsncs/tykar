@@ -5,6 +5,7 @@ import { useSession } from "@/hooks/AuthProvider";
 import Register from "./Register";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./ui/menu";
 import { useTranslation } from "react-i18next";
+import { LuChevronDown, LuLogOut, LuSettings } from "react-icons/lu";
 
 function Header() {
   const { session, logout } = useSession();
@@ -26,13 +27,17 @@ function Header() {
           <Spacer />
           {session ? (
             <MenuRoot>
-              <MenuTrigger as={Button}>{session.username}</MenuTrigger>
+              <MenuTrigger as={Button}>
+                {session.username} <LuChevronDown />
+              </MenuTrigger>
               <MenuContent>
                 <MenuItem value="settings" asChild>
-                  <Link to="settings">{t("settings")}</Link>
+                  <Link to="settings">
+                    <LuSettings /> {t("settings")}
+                  </Link>
                 </MenuItem>
                 <MenuItem value="logout" onClick={() => void logout()}>
-                  {t("logout")}
+                  <LuLogOut /> {t("logout")}
                 </MenuItem>
               </MenuContent>
             </MenuRoot>

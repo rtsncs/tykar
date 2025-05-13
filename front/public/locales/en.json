@@ -50,5 +50,7 @@
   "users": "Users",
   "chat": "Chat",
   "joined": "{{username}} joined",
-  "left": "{{username}} left"
+  "left": "{{username}} left",
+  "makao": "Makao",
+  "dice_poker": "Dice Poker"
 }

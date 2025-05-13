@@ -1,17 +1,18 @@
-import { Link, VStack } from "@chakra-ui/react";
-import { Link as ReactRouterLink } from "react-router";
+import { VStack } from "@chakra-ui/react";
+import { t } from "i18next";
+import { LuDices } from "react-icons/lu";
+import { TbPlayCard } from "react-icons/tb";
+import Link from "@/components/ui/link";
 
-function Index() {
+export default function Index() {
   return (
-    <VStack>
-      <Link asChild>
-        <ReactRouterLink to="makao">Makao</ReactRouterLink>
+    <VStack alignItems="flex-start" fontSize="xl">
+      <Link to="makao">
+        <TbPlayCard /> {t("makao")}
       </Link>
-      <Link asChild>
-        <ReactRouterLink to="dice_poker">Dice Poker</ReactRouterLink>
+      <Link to="dice_poker">
+        <LuDices /> {t("dice_poker")}
       </Link>
     </VStack>
   );
 }
-
-export default Index;
