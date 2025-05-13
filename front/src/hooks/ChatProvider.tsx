@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { t } from "i18next";
-import { GameHook } from "../@types/tykar";
+import { GameHook } from "@/types/tykar";
 
 export interface ChatMessage {
   author: string;

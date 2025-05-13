@@ -8,7 +8,7 @@ import { ApiProvider } from "./hooks/ApiProvider.tsx";
 import { RouterProvider } from "react-router/dom";
 import { SocketProvider } from "./hooks/SocketProvider.tsx";
 import { ColorModeProvider } from "./components/ui/color-mode.tsx";
-import router from "./routes.tsx";
+import router from "./router.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
 
 import "./i18n.ts";

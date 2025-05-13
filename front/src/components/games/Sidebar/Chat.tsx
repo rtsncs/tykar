@@ -2,7 +2,7 @@ import { chakra, Button, Group, Input, VStack } from "@chakra-ui/react";
 import ChatMessage from "./ChatMessage";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useChat } from "../../../hooks/ChatProvider";
+import { useChat } from "@/hooks/ChatProvider";
 
 function Chat() {
   const { t } = useTranslation();

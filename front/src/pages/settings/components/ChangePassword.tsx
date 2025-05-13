@@ -15,12 +15,12 @@ import {
   DialogTrigger,
   DialogActionTrigger,
   DialogCloseTrigger,
-} from "../ui/dialog";
-import { PasswordInput } from "../ui/password-input";
+} from "@/components/ui/dialog";
+import { PasswordInput } from "@/components/ui/password-input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useApi } from "../../hooks/ApiProvider";
+import { useApi } from "@/hooks/ApiProvider";
 import { useState } from "react";
-import { toaster } from "../ui/toaster";
+import { toaster } from "@/components/ui/toaster";
 import { useTranslation } from "react-i18next";
 
 interface Inputs {

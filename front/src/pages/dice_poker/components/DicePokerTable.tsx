@@ -1,9 +1,9 @@
 import { Box, Button, Card, Grid, Group } from "@chakra-ui/react";
-import { useDicePoker } from "../../hooks/DicePokerProvider";
-import { useSession } from "../../hooks/AuthProvider";
-import Die from "./Die";
+import { useDicePoker } from "../hook";
+import { useSession } from "@/hooks/AuthProvider";
+import Die from "@/components/games/Die";
 import { t } from "i18next";
-import PlayerHand from "./PlayerHand";
+import PlayerHand from "@/components/games/PlayerHand";
 
 export default function DicePokerTable() {
   const { game, dispatch } = useDicePoker();

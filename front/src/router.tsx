@@ -1,16 +1,20 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
-import DicePokerLobby from "./routes/DicePokerLobby.tsx";
-import DicePokerRoom from "./routes/DicePokerRoom.tsx";
 
 const App = lazy(() => import("./App.tsx"));
-const Index = lazy(() => import("./routes/Index.tsx"));
-const Makao = lazy(() => import("./routes/MakaoLobby.tsx"));
-const MakaoRoom = lazy(() => import("./routes/MakaoRoom.tsx"));
-const Settings = lazy(() => import("./routes/Settings.tsx"));
+const Index = lazy(() => import("./pages/Index.tsx"));
+const MakaoLobby = lazy(() => import("./pages/makao/MakaoLobby.tsx"));
+const MakaoRoom = lazy(() => import("./pages/makao/MakaoRoom.tsx"));
+const Settings = lazy(() => import("./pages/settings/index.tsx"));
 const ErrorPage = lazy(() => import("./error-page.tsx"));
-const ConfirmUser = lazy(() => import("./routes/ConfirmUser.tsx"));
-const ConfirmEmail = lazy(() => import("./routes/ConfirmEmail.tsx"));
+const ConfirmUser = lazy(() => import("./pages/settings/ConfirmUser.tsx"));
+const ConfirmEmail = lazy(() => import("./pages/settings/ConfirmEmail.tsx"));
+const DicePokerLobby = lazy(
+  () => import("./pages/dice_poker/DicePokerLobby.tsx"),
+);
+const DicePokerRoom = lazy(
+  () => import("./pages/dice_poker/DicePokerRoom.tsx"),
+);
 
 const router = createBrowserRouter([
   {
@@ -19,7 +23,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <Index /> },
-      { path: "makao", element: <Makao /> },
+      { path: "makao", element: <MakaoLobby /> },
       { path: "dice_poker", element: <DicePokerLobby /> },
       { path: "/settings", element: <Settings /> },
       { path: "/settings/confirm_email/:token", element: <ConfirmEmail /> },

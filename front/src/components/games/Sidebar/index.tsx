@@ -2,8 +2,8 @@ import { Tabs, VStack } from "@chakra-ui/react";
 import Seats from "./Seats";
 import Chat from "./Chat";
 import UserList from "./UserList";
-import { ChatProvider } from "../../../hooks/ChatProvider";
-import { GameHook } from "../../../@types/tykar";
+import { ChatProvider } from "@/hooks/ChatProvider";
+import { GameHook } from "@/types/tykar";
 import { LuMessageSquareText, LuUser } from "react-icons/lu";
 import { t } from "i18next";
 

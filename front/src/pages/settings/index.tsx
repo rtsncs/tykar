@@ -1,7 +1,7 @@
 import { DataList, Heading, Stack } from "@chakra-ui/react";
-import { useSession } from "../hooks/AuthProvider";
-import ChangeEmail from "../components/settings/ChangeEmail";
-import ChangePassword from "../components/settings/ChangePassword";
+import { useSession } from "@/hooks/AuthProvider";
+import ChangeEmail from "./components/ChangeEmail";
+import ChangePassword from "./components/ChangePassword";
 import { useTranslation } from "react-i18next";
 
 function Settings() {

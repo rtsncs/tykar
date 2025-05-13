@@ -1,19 +1,14 @@
 import { Channel, Presence } from "phoenix";
 import { useCallback, useEffect, useState } from "react";
-import { useSocket } from "../hooks/SocketProvider";
+import { useSocket } from "@/hooks/SocketProvider";
 import { useNavigate, useParams } from "react-router";
+import MakaoTable from "@/pages/makao/components/MakaoTable";
 import { HStack } from "@chakra-ui/react";
-import {
-  DicePokerAction,
-  DicePokerContext,
-  DicePokerGame,
-  useDicePoker,
-} from "../hooks/DicePokerProvider";
-import DicePokerTable from "../components/games/DicePokerTable";
-import FullscreenSpinner from "../components/FullsreenSpinner";
-import Sidebar from "../components/games/Sidebar/";
+import FullscreenSpinner from "@/components/FullscreenSpinner";
+import { MakaoAction, MakaoContext, MakaoGame, useMakao } from "./hook";
+import Sidebar from "@/components/games/Sidebar";
 
-function DicePokerRoom() {
+function MakaoRoom() {
   const { roomId } = useParams();
   const socket = useSocket();
   const navigate = useNavigate();
@@ -22,19 +17,23 @@ function DicePokerRoom() {
   const [presence, setPresence] = useState<Presence | null>(null);
 
   const dispatch = useCallback(
-    (action: DicePokerAction) => {
+    (action: MakaoAction) => {
       if (!channel) return;
       switch (action.type) {
-        case "roll": {
-          channel.push("roll", {});
+        case "play": {
+          channel.push("play", { card: action.card });
+          break;
+        }
+        case "demand": {
+          channel.push("demand", { demand: action.demand });
+          break;
+        }
+        case "draw": {
+          channel.push("draw", {});
           break;
         }
         case "pass": {
           channel.push("pass", {});
-          break;
-        }
-        case "keep": {
-          channel.push("keep", { index: action.index, value: action.value });
           break;
         }
         case "sit_down": {
@@ -60,11 +59,11 @@ function DicePokerRoom() {
     [channel],
   );
 
-  const [game, setGame] = useState<DicePokerGame | null>(null);
+  const [game, setGame] = useState<MakaoGame | null>(null);
 
   useEffect(() => {
     if (!socket) return;
-    const newChannel = socket.channel(`dice_poker:${roomId}`);
+    const newChannel = socket.channel(`makao:${roomId}`);
     setChannel(newChannel);
     const newPresence = new Presence(newChannel);
     setPresence(newPresence);
@@ -72,7 +71,7 @@ function DicePokerRoom() {
     newChannel.join().receive("error", () => {
       void navigate("..", { relative: "path" });
     });
-    newChannel.on("game", (game: DicePokerGame) => {
+    newChannel.on("game", (game: MakaoGame) => {
       setGame(game);
     });
 
@@ -88,13 +87,13 @@ function DicePokerRoom() {
   }
 
   return (
-    <DicePokerContext.Provider value={{ game, dispatch, channel, presence }}>
+    <MakaoContext.Provider value={{ game, dispatch, channel, presence }}>
       <HStack gap="0">
-        <DicePokerTable />
-        <Sidebar gameHook={useDicePoker} />
+        <MakaoTable />
+        <Sidebar gameHook={useMakao} />
       </HStack>
-    </DicePokerContext.Provider>
+    </MakaoContext.Provider>
   );
 }
 
-export default DicePokerRoom;
+export default MakaoRoom;

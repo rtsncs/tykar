@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
-import { Game, GameAction, Player } from "../@types/tykar";
+import { Game, GameAction, Player } from "@/types/tykar";
 import { Channel, Presence } from "phoenix";
-import { PlayingCardProps } from "../components/games/PlayingCard";
+import { PlayingCardProps } from "@/components/games/PlayingCard";
 
 export interface MakaoPlayer extends Player {
   data: {

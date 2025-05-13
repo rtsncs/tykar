@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Player } from "../../@types/tykar";
+import { Player } from "@/types/tykar";
 import { ReactNode } from "react";
 
 function PlayerHand({

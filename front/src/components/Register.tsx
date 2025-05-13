@@ -7,8 +7,8 @@ import {
   Fieldset,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useApi } from "../hooks/ApiProvider";
-import type { components } from "../@types/api";
+import { useApi } from "@/hooks/ApiProvider";
+import type { components } from "@/types/api";
 import {
   DialogRoot,
   DialogBody,

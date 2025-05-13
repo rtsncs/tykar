@@ -7,7 +7,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { LoginRequest, useSession } from "../hooks/AuthProvider";
+import { LoginRequest, useSession } from "@/hooks/AuthProvider";
 import {
   DialogRoot,
   DialogTitle,

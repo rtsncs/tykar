@@ -1,9 +1,9 @@
 import { Channel, Presence } from "phoenix";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@chakra-ui/react";
-import { useSocket } from "../hooks/SocketProvider";
+import { useSocket } from "@/hooks/SocketProvider";
 import { useNavigate } from "react-router";
-import RoomList from "../components/RoomList";
+import RoomList from "@/components/RoomList";
 import { useTranslation } from "react-i18next";
 
 function Makao() {

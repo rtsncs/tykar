@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import type { ChatMessage } from "../../../hooks/ChatProvider";
+import type { ChatMessage } from "@/hooks/ChatProvider";
 
 function ChatMessage({ author, content }: ChatMessage) {
   return (

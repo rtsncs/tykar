@@ -1,10 +1,10 @@
 import { SimpleGrid, CheckboxCheckedChangeDetails } from "@chakra-ui/react";
 import Seat from "./Seat";
-import { Game, GameAction } from "../../../@types/tykar";
+import { Game, GameAction } from "@/types/tykar";
 import { ActionDispatch } from "react";
-import { Checkbox } from "../../ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { t } from "i18next";
-import { useSession } from "../../../hooks/AuthProvider";
+import { useSession } from "@/hooks/AuthProvider";
 
 function Seats({
   gameHook,

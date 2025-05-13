@@ -1,6 +1,6 @@
 import { Center, Button, Group, Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { Player } from "../../../@types/tykar";
+import { Player } from "@/types/tykar";
 import { LuCheck, LuTrophy, LuX } from "react-icons/lu";
 
 function Seat({

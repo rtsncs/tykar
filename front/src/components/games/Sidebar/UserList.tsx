@@ -1,5 +1,5 @@
 import { Box, VStack } from "@chakra-ui/react";
-import { GameHook } from "../../../@types/tykar";
+import { GameHook } from "@/types/tykar";
 import { useEffect, useState } from "react";
 
 function UserList({ gameHook }: { gameHook: GameHook }) {

@@ -7,13 +7,13 @@ import {
   GridItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import CardHand from "../CardHand";
-import { useSession } from "../../../hooks/AuthProvider";
-import PlayerHand from "../PlayerHand";
+import CardHand from "@/components/games/CardHand";
+import { useSession } from "@/hooks/AuthProvider";
+import PlayerHand from "@/components/games/PlayerHand";
 import MakaoDemandModal from "./MakaoDemandModal";
 import { useTranslation } from "react-i18next";
-import { useMakao } from "../../../hooks/MakaoProvider";
-import { PlayingCardProps } from "../PlayingCard";
+import { useMakao } from "../hook";
+import { PlayingCardProps } from "@/components/games/PlayingCard";
 
 function MakaoTable() {
   const { game, dispatch } = useMakao();
