@@ -17,7 +17,7 @@ defmodule Tykar.Application do
       # Start a worker by calling: Tykar.Worker.start_link(arg)
       # {Tykar.Worker, arg},
       {Registry, keys: :unique, name: Tykar.GameRegistry},
-      {DynamicSupervisor, strategy: :one_for_one, name: Tykar.MakaoSupervisor},
+      {DynamicSupervisor, strategy: :one_for_one, name: Tykar.GameSupervisor},
       TykarWeb.Presence,
       # Start to serve requests, typically the last entry
       TykarWeb.Endpoint
