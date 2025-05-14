@@ -27,16 +27,26 @@ function Header() {
           <Spacer />
           {session ? (
             <MenuRoot>
-              <MenuTrigger as={Button}>
-                {session.username} <LuChevronDown />
+              <MenuTrigger asChild>
+                <Button variant="outline">
+                  {session.username} <LuChevronDown />
+                </Button>
               </MenuTrigger>
               <MenuContent>
-                <MenuItem value="settings" asChild>
+                <MenuItem
+                  _hover={{ cursor: "button" }}
+                  value="settings"
+                  asChild
+                >
                   <Link to="settings">
                     <LuSettings /> {t("settings")}
                   </Link>
                 </MenuItem>
-                <MenuItem value="logout" onClick={() => void logout()}>
+                <MenuItem
+                  _hover={{ cursor: "button" }}
+                  value="logout"
+                  onClick={() => void logout()}
+                >
                   <LuLogOut /> {t("logout")}
                 </MenuItem>
               </MenuContent>
